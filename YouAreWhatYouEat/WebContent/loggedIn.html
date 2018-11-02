@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- from bootstrap template -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script src="jquery-1.11.1.min.js"></script>
+
+    
+
+    <!-- from alex -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/css/mdb.min.css">
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/js/mdb.min.js"></script>
+
+
+    <link href="styles.css" rel="stylesheet"/>
+
+    <meta http-equiv='Pragma' content='no-cache'>
+    <meta http-equiv='Expires' content='-1'>
+
+    <title>Food Data        </title>
+
+    <!-- from bootstrap -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+<body role="document">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="loggedIn.html">FoodData</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active" id="searchNav"><a href="loggedIn.html">Search</a></li>
+
+                    <li id="userNav"><a href="user.html">User</a></li>
+            <li id="socialNav"><a href="social.html">Social</a></li>
+              </ul>
+      <ul class="nav navbar-nav navbar-right">
+      <li id="loginNav"><a href="logout.html"><span class="glyphicon glyphicon-log-in"></span>
+Log out</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div id="top">
+        <img class="center-block" height="120" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVehmHJrXNRaFSiD2mmexUgE0sXK52smE-EtPrPikUhP-2EZoQ" />
+    </div>
+
+
+    <div id="middle1">
+        <div class="container">
+<div class="row spaceTop">
+    <div class="col-sm-6">
+
+        <div class="input-group">
+            <input id="search" type="text" 
+                class="form-control" name="search" placeholder="Search">
+            <div class="input-group-btn">
+                <button class="btn btn-default"
+                ><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-sm-6">
+        <a href="#" class="btn btn-danger input-block-level form-control">
+            Compare
+        </a>
+    </div>
+</div>
+<div class="row spaceTop">
+    <div class="col-sm-6">
+
+        
+        <div class="form-group">
+            <label for="list">List of Foods</label>
+            <select multiple class="form-control" id="list">
+                <option>Smoothie</option>
+                <option>Sandwich</option>
+                <option>Juice</option>
+                <option>Bread</option>
+                <option>Apples</option>
+                <option>Apricots</option>
+                <option>Ammonia cookie</option>
+                <option>Cuisine of Antebellum America</option>
+                <option>Apple butter</option>
+                <option>Apple sauce</option>
+                <option>Baked potato</option>
+                <option>Barbecue (see below for specific types)</option>
+                <option>Bear claw</option>
+                <option>Beef Manhattan</option>
+                <option>Blue cheese dressing</option>
+                <option>Blue-plate special</option>
+                <option>Bookbinder soup</option>
+                <option>Breakfast burrito</option>
+                <option>Brunswick stew</option>
+                <option>Buffalo burger</option>
+                <option>Buffalo wing</option>
+                <option>Bull roast</option>
+                <option>Burnt ends</option>
+                <option>Butter cookie</option>
+                <option>Cajun cuisine</option>
+                <option>Calf's liver and bacon</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="col-sm-6">
+        <h3>Nutritional Information</h3>
+        <p>
+            List of food objects, with each food object containing: <br>
+            kcal per 100gr, <br>
+            protein per 100 grams, <br>
+            carbohydrates per 100 grams, <br>
+            brand of the food, <br>
+            if the food is generic or brandid, a<br>
+            list of existing measures for the food, <br>
+            contents label of the food.
+        </p>
+    </div>
+</div>
+<div class="row spaceTop">
+    <div class="col-sm-9">
+        <h3>My Meals</h3>
+        <table class="table">
+            <tr>
+                <td>
+                   Ammonia cookie, 
+                   Cuisine of Antebellum America, 
+                   Apple butter
+                </td>
+                <td>
+                    <button class="btn btn-default">Share</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                   Ammonia cookie, 
+                   Cuisine of Antebellum America, 
+                   Apple butter
+                </td>
+                <td>
+                    <button class="btn btn-default">Share</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-sm-3">
+        <h3>Details</h3>
+        <p>
+        An ammonia cookie is a cookie made with baking ammonia as a leavener. 
+        In the United States, they are most closely associated 
+        with Scandinavian-American cooking.
+        </p>
+    </div>
+</div>
+<script>
+    $(".nav li").removeClass("active");
+    $("#searchNav").addClass("active");
+</script>
+
+</div>
+</div>
+
+    <div id="bottom">
+        Created by WeNeedAName Inc. All rights reserved
+    </div>
+
+</body>
+</html>

@@ -36,6 +36,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
   </head>
 
 <body role="document">
@@ -47,7 +48,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/search.php">FoodData</a>
+      <a class="navbar-brand" href="index.html">FoodData</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
@@ -63,7 +64,8 @@
 </nav>
 
     <div id="top">
-        <img class="center-block" height="120" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVehmHJrXNRaFSiD2mmexUgE0sXK52smE-EtPrPikUhP-2EZoQ" />
+        <img class="center-block" height="120" 
+        	src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVehmHJrXNRaFSiD2mmexUgE0sXK52smE-EtPrPikUhP-2EZoQ" />
     </div>
 
 
@@ -132,6 +134,8 @@
 	        <label for="file">Profile Picture</label>
 	        <input type="file" class="form-control" id="file" name="file">
 	    </div>
+	    
+	    <input type="hidden" name="type" value="register" >
 
         <button type="submit" class="btn btn-danger" 
             value="register">Register</button>
@@ -145,4 +149,67 @@
     </div>
 
 </body>
+
+<script>
+var s = "";
+$("form").submit( ()=>{
+
+    if( document.getElementById("file").files[0] == undefined ) {
+        ajax( "undefined", "undefined" );
+        return false;
+    }
+
+    // prepare file (from https://stackoverflow.com/questions/4006520/using-html5-file-uploads-with-ajax-and-jquery)
+    var reader = new FileReader();
+    reader.readAsText( document.getElementById("file").files[0] );
+
+    // when reading
+    reader.onload = function(event) {
+        ajax( event.target.result,
+            document.getElementById('file').files[0].name
+        );
+    }
+    return false;
+
+    function ajax(file, fileName) {
+        // send and form
+        $.post("UserManagement", {
+            type: "register",
+            firstName: $("#firstName").val(),
+            lastName: $("#lastName").val(),
+            email: $("#email").val(),
+            pictureName: fileName,
+            password: $("#password").val(),
+            picture: file
+        })
+        .fail(function(d) {
+        	s = d;
+        	alert(d.status + ": " + d.statusText);
+        })
+        .done( function(d){
+        	alert("attempting to parse " + d);
+            var json;
+            try {
+            	json = JSON.parse(d);
+                alert("parse successful. Checking fields");
+                alert("type: " + json.type);
+                alert("message: " + json.message);
+
+                if(json.type == "success") {
+                    window.location.href="loggedIn.html";
+                }
+                else {
+                    alert(json.message);
+                }
+            }
+            catch(e) {
+                alert("Unable to parse answer from server.\n"
+                    +";p");
+            }
+        });
+    }
+});
+
+</script>
+
 </html>

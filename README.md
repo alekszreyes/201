@@ -46,6 +46,8 @@ I built some tests that will let you know what answer are you sending to the fro
 
 ##### Example
 
+if fails,
+
 ```javascript
 {
     type: "exist",
@@ -53,21 +55,36 @@ I built some tests that will let you know what answer are you sending to the fro
 }
 ```
 
+if successful,
+
+```javascript
+{
+    type: "success",
+    message: "3"
+}
+```
+
+
+
 #### Login 
 
 - type: "login"
 - email: ""
 - password: ""
 
-#####Response (JSON object)
+##### Response (JSON object)
 
 - type: 
   - "success": all is well
   - "notexists": doesn't exist
   - "invalid": parameters missing or bad request
-- message: "e.g. A message to display to the user if <nonexists> or <invalid>"
+- message: 
+  - if it fails, "e.g. A message to display to the user <nonexists> or <invalid>"
+  - if successful, userID
 
 ##### Example
+
+If fails,
 
 ```javascript
 {
@@ -75,6 +92,17 @@ I built some tests that will let you know what answer are you sending to the fro
     message: "Account already exists."
 }
 ```
+
+if successful,
+
+```javascript
+{
+    type: "success",
+    message: "3"
+}
+```
+
+
 
 ## SearchEngine
 
@@ -149,4 +177,4 @@ e.g.
 
 ## SummaryEngine
 
-###Requests
+### Requests

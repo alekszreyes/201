@@ -151,7 +151,7 @@
 </body>
 
 <script>
-var s = "";
+
 $("form").submit( ()=>{
 
     if( document.getElementById("file").files[0] == undefined ) {
@@ -183,7 +183,7 @@ $("form").submit( ()=>{
             picture: file
         })
         .fail(function(d) {
-        	s = d;
+
         	alert(d.status + ": " + d.statusText);
         })
         .done( function(d){

@@ -102,7 +102,25 @@ if successful,
 }
 ```
 
+#### Logout
 
+Front end sends
+
+```javascript
+{
+    type: "logout"
+}
+```
+
+Back end response
+
+```javascript
+{
+    type: "success"
+}
+```
+
+The response exists so that FE knows that BE acknowledged request as opposed as the connection broke or the like.
 
 ## SearchEngine
 
@@ -111,7 +129,16 @@ if successful,
 - type: "search"
 - q: ""
 
+```javascript
+{
+    type: "search",
+    q: "a"
+}
+```
+
 ##### Response (JSON array)
+
+The backend should return all the food items that begin with the string passed in q. Spaces are considered OR requests. Empty q should return all food items (maybe just the first one hundred). Notice this is a  **JSON array** so the syntax is a bit different (but not too much).
 
 - foodID:
 - foodName:
@@ -119,10 +146,10 @@ if successful,
 e.g. 
 
 ```javascript
-{
-    [foodId: 1, foodName: "apple"], 
-    [foodId: 2, foodName: "appricot"]
-}
+[
+    {"foodId":"2", "foodName":"apple"},
+    {"foodId":"3", "foodName":"orange"}
+]
 ```
 
 #### Food Info
@@ -173,7 +200,34 @@ e.g.
 }
 ```
 
+### Create a meal
 
+#### Request
+
+This happens when a user has combined food items and wants to save this into a meal that is presumably consuming.
+
+```javascript
+{
+    name: "Veggie Meal",
+    content: [3,2,10,19]
+}
+```
+
+#### Response
+
+This should only be done by a logged in user. If the request is sent from an account that is not logged, BE notifies so FE can redirect user to the correct page.
+
+if comes from a logged user, make sure you are track the calories that the user is consuming in this meal. Also return the following.
+
+```javascript
+{ type: "success" }
+```
+
+if guest, return
+
+```javascript
+{ type: "guest" }
+```
 
 ## SummaryEngine
 

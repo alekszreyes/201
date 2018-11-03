@@ -178,3 +178,8 @@ e.g.
 ## SummaryEngine
 
 ### Requests
+
+## USDA Food Database
+
+Instructions: In MySQLWorkbench, click on Server --> Data Import, and import the file nutrition_sr28.sql. After this process is completed, a database called "nutrition" will be created. See the script example_query_usda.sql for an example on how to query all the nutritional information for the search "smoothie". 
+

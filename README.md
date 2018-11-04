@@ -46,6 +46,8 @@ I built some tests that will let you know what answer are you sending to the fro
 
 ##### Example
 
+if fails,
+
 ```javascript
 {
     type: "exist",
@@ -53,21 +55,36 @@ I built some tests that will let you know what answer are you sending to the fro
 }
 ```
 
+if successful,
+
+```javascript
+{
+    type: "success",
+    message: "3"
+}
+```
+
+
+
 #### Login 
 
 - type: "login"
 - email: ""
 - password: ""
 
-#####Response (JSON object)
+##### Response (JSON object)
 
 - type: 
   - "success": all is well
   - "notexists": doesn't exist
   - "invalid": parameters missing or bad request
-- message: "e.g. A message to display to the user if <nonexists> or <invalid>"
+- message: 
+  - if it fails, "e.g. A message to display to the user <nonexists> or <invalid>"
+  - if successful, userID
 
 ##### Example
+
+If fails,
 
 ```javascript
 {
@@ -76,6 +93,35 @@ I built some tests that will let you know what answer are you sending to the fro
 }
 ```
 
+if successful,
+
+```javascript
+{
+    type: "success",
+    message: "3"
+}
+```
+
+#### Logout
+
+Front end sends
+
+```javascript
+{
+    type: "logout"
+}
+```
+
+Back end response
+
+```javascript
+{
+    type: "success"
+}
+```
+
+The response exists so that FE knows that BE acknowledged request as opposed as the connection broke or the like.
+
 ## SearchEngine
 
 #### Search
@@ -83,7 +129,16 @@ I built some tests that will let you know what answer are you sending to the fro
 - type: "search"
 - q: ""
 
+```javascript
+{
+    type: "search",
+    q: "a"
+}
+```
+
 ##### Response (JSON array)
+
+The backend should return all the food items that begin with the string passed in q. Spaces are considered OR requests. Empty q should return all food items (maybe just the first one hundred). Notice this is a  **JSON array** so the syntax is a bit different (but not too much).
 
 - foodID:
 - foodName:
@@ -91,10 +146,10 @@ I built some tests that will let you know what answer are you sending to the fro
 e.g. 
 
 ```javascript
-{
-    [foodId: 1, foodName: "apple"], 
-    [foodId: 2, foodName: "appricot"]
-}
+[
+    {"foodId":"2", "foodName":"apple"},
+    {"foodId":"3", "foodName":"orange"}
+]
 ```
 
 #### Food Info
@@ -145,8 +200,40 @@ e.g.
 }
 ```
 
+### Create a meal
 
+#### Request
+
+This happens when a user has combined food items and wants to save this into a meal that is presumably consuming.
+
+```javascript
+{
+    name: "Veggie Meal",
+    content: [3,2,10,19]
+}
+```
+
+#### Response
+
+This should only be done by a logged in user. If the request is sent from an account that is not logged, BE notifies so FE can redirect user to the correct page.
+
+if comes from a logged user, make sure you are track the calories that the user is consuming in this meal. Also return the following.
+
+```javascript
+{ type: "success" }
+```
+
+if guest, return
+
+```javascript
+{ type: "guest" }
+```
 
 ## SummaryEngine
 
-###Requests
+### Requests
+
+## USDA Food Database
+
+Instructions: In MySQLWorkbench, click on Server --> Data Import, and import the file nutrition_sr28.sql. After this process is completed, a database called "nutrition" will be created. See the script example_query_usda.sql for an example on how to query all the nutritional information for the search "smoothie". 
+

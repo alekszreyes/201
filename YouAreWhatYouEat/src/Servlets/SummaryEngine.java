@@ -22,8 +22,7 @@ public class SummaryEngine extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-    protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
     }
 

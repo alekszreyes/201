@@ -72,7 +72,7 @@ Log in</a></li>
     <div class="col-sm-6">
 
         <div class="input-group">
-            <input id="search" type="text" 
+            <input id="search" type="text"
                 class="form-control" name="search" placeholder="Search">
             <div class="input-group-btn">
                 <button class="btn btn-default"
@@ -82,15 +82,16 @@ Log in</a></li>
 
     </div>
     <div class="col-sm-6">
-        <a href="#" class="btn btn-danger input-block-level form-control">
+        <button id="cmpBtn" hidden
+            class="btn btn-danger input-block-level form-control">
             Compare
-        </a>
+        </button>
     </div>
 </div>
 <div class="row spaceTop">
     <div class="col-sm-6">
 
-        
+
         <div class="form-group">
             <label for="list">List of Foods</label>
             <select multiple class="form-control" id="list">
@@ -126,7 +127,7 @@ Log in</a></li>
     </div>
     <div class="col-sm-6">
         <h3>Nutritional Information</h3>
-        <p>
+        <p id="info">
             List of food objects, with each food object containing: <br>
             kcal per 100gr, <br>
             protein per 100 grams, <br>
@@ -139,13 +140,21 @@ Log in</a></li>
     </div>
 </div>
 <div class="row spaceTop">
+    <div class="jumbotron">
+        <h1>Sign in for full access</h1>
+        <p class="text-center">
+            You can create and save meals, share them with friends
+        and follow what they eat.</p>
+    </div>
+</div>
+<div class="row disabled">
     <div class="col-sm-9">
         <h3>My Meals</h3>
         <table class="table">
             <tr>
                 <td>
-                   Ammonia cookie, 
-                   Cuisine of Antebellum America, 
+                   Ammonia cookie,
+                   Cuisine of Antebellum America,
                    Apple butter
                 </td>
                 <td>
@@ -154,8 +163,8 @@ Log in</a></li>
             </tr>
             <tr>
                 <td>
-                   Ammonia cookie, 
-                   Cuisine of Antebellum America, 
+                   Ammonia cookie,
+                   Cuisine of Antebellum America,
                    Apple butter
                 </td>
                 <td>
@@ -167,8 +176,8 @@ Log in</a></li>
     <div class="col-sm-3">
         <h3>Details</h3>
         <p>
-        An ammonia cookie is a cookie made with baking ammonia as a leavener. 
-        In the United States, they are most closely associated 
+        An ammonia cookie is a cookie made with baking ammonia as a leavener.
+        In the United States, they are most closely associated
         with Scandinavian-American cooking.
         </p>
     </div>
@@ -186,4 +195,97 @@ Log in</a></li>
     </div>
 
 </body>
+
+<script>
+var s = "";
+$(function() {
+
+    $("#cmpBtn").hide();
+    listener();
+
+    $.post("SearchEngine", {
+        type: "search",
+        q: ""
+    })
+    .done(function(d){
+        console.log("trying to parse response " + d);
+        try {
+            // verify data conforms
+            var json = JSON.parse(d);
+            json = JSON.parse(json);
+            console.log("items passed: " + json.length);
+            s = json;
+
+            // populate list
+            populateList(json);
+
+            // click first
+            //$(".foodItem").first().click();
+        }
+        catch(e) {
+            console.log("error parsing");
+        }
+    });
+});
+
+function populateList(data) {
+    var str = "";
+
+    // constants
+    const prep = '<option class="foodItem" id="f';
+    const end = '</option>';
+
+    for(let i in data) {
+        let item = data[i];
+        str += prep + item.foodId + '">' + item.foodName + '</option>';
+    }
+    $("#list").html(str);
+    listener();
+}
+
+// a click listener for food items
+function listener() {
+
+    // when an item is clicked
+    $(".foodItem").click(function(){
+
+        // show button
+        $("#cmpBtn").show();
+
+        // get item id
+        var foodId = $(this).attr("id");
+        foodId = foodId.substr(1);
+        console.log("id is " + foodId);
+
+        // request info from back end
+        $.post("SearchEngine", {
+            type: "getFood",
+            foodId: foodId
+        })
+        .done(function(d){
+            console.log("trying to parse response");
+            try {
+                // check it conforms
+                var json = JSON.parse(d);
+                json = JSON.parse(json);
+                s = json;
+                console.log("parsing: " + json);
+                console.log("foodId: " + json.foodId);
+                console.log("foodName: " + json.foodName);
+                console.log("calories: " + json.calories);
+
+                // display info
+                const br = '<br>';
+                $("#info").html('<b>' + json.foodName + '</b>' + br
+                    + "calories: " + json.calories
+                );
+            }
+            catch(e) {
+                console.log("error parsing");
+            }
+        });
+    });
+}
+
+</script>
 </html>

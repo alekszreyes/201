@@ -151,7 +151,7 @@
 </body>
 
 <script>
-var s = "";
+
 $("form").submit( ()=>{
 
     if( document.getElementById("file").files[0] == undefined ) {
@@ -173,7 +173,7 @@ $("form").submit( ()=>{
 
     function ajax(file, fileName) {
         // send and form
-        $.post("UserManagement", {
+        $.post("UserManager", {
             type: "register",
             firstName: $("#firstName").val(),
             lastName: $("#lastName").val(),
@@ -183,7 +183,7 @@ $("form").submit( ()=>{
             picture: file
         })
         .fail(function(d) {
-        	s = d;
+
         	alert(d.status + ": " + d.statusText);
         })
         .done( function(d){

@@ -22,9 +22,23 @@ public class SearchEngine extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-    protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	String type = request.getParameter("type");
     	
+    	// user searching for food
+    	if(type != null && type.equals("search")) {
+    		
+    	}
+    	
+    	// user getting food information
+    	if(type != null && type.equals("getFood")) {
+    		
+    	}
+    	
+    	// user comparing two food
+    	if(type != null && type.equals("compare")) {
+    		
+    	}
     }
 
 }

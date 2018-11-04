@@ -85,9 +85,10 @@ Log out</a></li>
 
     </div>
     <div class="col-sm-6">
-        <a href="#" class="btn btn-danger input-block-level form-control">
+        <button id="cmpBtn" style="display:none"
+            class="btn btn-danger input-block-level form-control">
             Compare
-        </a>
+        </button>
     </div>
 </div>
 <div class="row spaceTop">
@@ -139,7 +140,20 @@ Log out</a></li>
             list of existing measures for the food, <br>
             contents label of the food.
         </p>
+        <button class="btn btn-danger" id="addBtn" style="display: none">Add to meal</button>
     </div>
+</div>
+<div id="myMeal" class="row spaceTop" style="display:none">
+    <div class="col-sm-9" id="mealItems">
+        <h3>Create a meal</h3>
+    </div>
+    <div class="col-sm-3">
+        <h3> _</h3>
+        <button id="saveMeal" class="btn btn-danger">
+            Save Meal
+        </button>
+    </div>
+
 </div>
 <div class="row spaceTop">
     <div class="col-sm-9">
@@ -176,10 +190,6 @@ Log out</a></li>
         </p>
     </div>
 </div>
-<script>
-    $(".nav li").removeClass("active");
-    $("#searchNav").addClass("active");
-</script>
 
 </div>
 </div>
@@ -188,5 +198,190 @@ Log out</a></li>
         Created by WeNeedAName Inc. All rights reserved
     </div>
 
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Comparing food</h4>
+        </div>
+        <div class="modal-body">
+          <p>Comparing food items.</p>
+          <table class="table">
+            <tr>
+                <th></th>
+                <th id="item1">Item</th>
+                <th id="item2">Item</th>
+            </tr>
+            <tr>
+                <td>Calories: </td>
+                <td id="cal1"> </td>
+                <td id="cal2"> </td>
+            </tr>
+            <tr>
+                <td>Protein: </td>
+                <td id="prot1"> </td>
+                <td id="prot2"> </td>
+            </tr>
+            <tr>
+                <td>Vitamin: </td>
+                <td id="vit1"> </td>
+                <td id="vit2"> </td>
+            </tr>
+            <tr>
+                <td>Sugar: </td>
+                <td id="sugar1"> </td>
+                <td id="sugar2"> </td>
+            </tr>
+            <tr>
+                <td> </td>
+                <td><button data="0" class="btn btn-default add">Add to Meal</button></td>
+                <td><button data="1" class="btn btn-default add">Add to Meal</button></td>
+            </tr>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Name of Meal -->
+  <div class="modal fade" id="mealModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Name Meal</h4>
+        </div>
+        <div class="modal-body">
+          <p>You are about to save this meal.</p>
+          <p>Please enter a name to save this meal</p>
+          <p id="modalMessage" style="display: none; color: red">
+            Please enter a name to save this meal
+          </p>
+
+            <div class="form-group">
+                <label for="mealName">Name:</label>
+                <input type="text"
+                    class="form-control" id="mealName" placeholder="Name of meal">
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveMealModal" class="btn btn-success" 
+                >Save</button>
+            <button type="button" 
+                class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="search.js"></script>
+<script>
+
+$(".nav li").removeClass("active");
+$("#searchNav").addClass("active");
+
+// button from modal
+$(".add").click(function(){
+    $("#myModal").modal("hide");
+    let item = $(this).attr("data") ;
+
+    alert("adding " + s[item].foodName);
+
+    addFoodToMeal(s[item].foodId, s[item].foodName);
+
+});
+
+// add button
+$("#addBtn").click(function(){
+    // add to my meal
+    var selected = $("#list").children("option:selected");
+
+    $.each(selected, function(i,d){
+        var id = d.attributes.id.value;
+        id = id.substr(1);
+        console.log(id + " " + d.text);
+
+        addFoodToMeal(id, d.text);
+
+    });
+});
+
+var mealItems = [];
+
+function addFoodToMeal(id, name) {
+
+    // add to meal items
+    mealItems.push(id);
+
+    // add button
+    $("#myMeal").show();
+    let str = '<button class="btn btn-default mealFood" item="' + id
+        + '">' + name + ' X </button>';
+    $("#mealItems").html( $("#mealItems").html() + str );
+
+    // listener to delete
+    $(".mealFood").click(function() {
+
+        // remove data
+        let id = $(this).attr("item");
+        mealItems.splice(mealItems.indexOf(id), 1);
+
+        // remove button
+        $(this).remove();
+    });
+}
+
+$("#saveMeal").click(function(){
+    // hide warning message
+    $("#modalMessage").hide();
+    $("#mealName").val("");
+
+    // display modal
+    $("#mealModal").modal();
+});
+
+// this comes from the modal when saving a meal
+$("#saveMealModal").click(function(){
+
+    // if no name
+    if($("#mealName").val() == "") {
+        $("#modalMessage").show();
+        return;
+    }
+    // pass to backedn
+    $.post("SearchEngine", {
+        type: "saveMeal",
+        name: $("#mealName").val(),
+        mealItems: JSON.stringify( mealItems )
+    })
+    .done(function(d){
+        // print response
+        alert("response: " + d);
+
+        // todo: capture meal and diplay it
+
+        $("#mealModal").modal("hide");
+
+        $(".mealFood").each(function(){
+            $(this).click();
+        });
+
+        // hide create my meal div
+        $("#myMeal").hide();
+    });
+});
+
+
+</script>
 </body>
 </html>

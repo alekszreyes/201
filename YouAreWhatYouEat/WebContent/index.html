@@ -72,7 +72,7 @@ Log in</a></li>
     <div class="col-sm-6">
 
         <div class="input-group">
-            <input id="search" type="text"
+            <input id="search" type="text" 
                 class="form-control" name="search" placeholder="Search">
             <div class="input-group-btn">
                 <button class="btn btn-default"
@@ -82,7 +82,7 @@ Log in</a></li>
 
     </div>
     <div class="col-sm-6">
-        <button id="cmpBtn" hidden
+        <button id="cmpBtn" style="display:none"
             class="btn btn-danger input-block-level form-control">
             Compare
         </button>
@@ -91,7 +91,7 @@ Log in</a></li>
 <div class="row spaceTop">
     <div class="col-sm-6">
 
-
+        
         <div class="form-group">
             <label for="list">List of Foods</label>
             <select multiple class="form-control" id="list">
@@ -153,8 +153,8 @@ Log in</a></li>
         <table class="table">
             <tr>
                 <td>
-                   Ammonia cookie,
-                   Cuisine of Antebellum America,
+                   Ammonia cookie, 
+                   Cuisine of Antebellum America, 
                    Apple butter
                 </td>
                 <td>
@@ -163,8 +163,8 @@ Log in</a></li>
             </tr>
             <tr>
                 <td>
-                   Ammonia cookie,
-                   Cuisine of Antebellum America,
+                   Ammonia cookie, 
+                   Cuisine of Antebellum America, 
                    Apple butter
                 </td>
                 <td>
@@ -176,16 +176,12 @@ Log in</a></li>
     <div class="col-sm-3">
         <h3>Details</h3>
         <p>
-        An ammonia cookie is a cookie made with baking ammonia as a leavener.
-        In the United States, they are most closely associated
+        An ammonia cookie is a cookie made with baking ammonia as a leavener. 
+        In the United States, they are most closely associated 
         with Scandinavian-American cooking.
         </p>
     </div>
 </div>
-<script>
-    $(".nav li").removeClass("active");
-    $("#searchNav").addClass("active");
-</script>
 
 </div>
 </div>
@@ -194,98 +190,71 @@ Log in</a></li>
         Created by WeNeedAName Inc. All rights reserved
     </div>
 
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Comparing food</h4>
+        </div>
+        <div class="modal-body">
+          <p>Comparing food items.</p>
+          <table class="table">
+            <tr>
+                <th></th>
+                <th id="item1">Item</th>
+                <th id="item2">Item</th>
+            </tr>
+            <tr>
+                <td>Calories: </td>
+                <td id="cal1"> </td>
+                <td id="cal2"> </td>
+            </tr>
+            <tr>
+                <td>Protein: </td>
+                <td id="prot1"> </td>
+                <td id="prot2"> </td>
+            </tr>
+            <tr>
+                <td>Vitamin: </td>
+                <td id="vit1"> </td>
+                <td id="vit2"> </td>
+            </tr>
+            <tr>
+                <td>Sugar: </td>
+                <td id="sugar1"> </td>
+                <td id="sugar2"> </td>
+            </tr>
+            <tr>
+                <td> </td>
+                <td><button data="0" class="btn btn-default add">Add to Meal</button></td>
+                <td><button data="1" class="btn btn-default add">Add to Meal</button></td>
+            </tr>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 </body>
 
+<script src="search.js"></script>
 <script>
-var s = "";
-$(function() {
+$(".nav li").removeClass("active");
+$("#searchNav").addClass("active");
 
-    $("#cmpBtn").hide();
-    listener();
+$(".add").click(function(){
+    $("#myModal").modal("hide");
+    let item = $(this).attr("data") ;
 
-    $.post("SearchEngine", {
-        type: "search",
-        q: ""
-    })
-    .done(function(d){
-        console.log("trying to parse response " + d);
-        try {
-            // verify data conforms
-            var json = JSON.parse(d);
-            json = JSON.parse(json);
-            console.log("items passed: " + json.length);
-            s = json;
-
-            // populate list
-            populateList(json);
-
-            // click first
-            //$(".foodItem").first().click();
-        }
-        catch(e) {
-            console.log("error parsing");
-        }
-    });
+    alert("Please login to add meals");
 });
-
-function populateList(data) {
-    var str = "";
-
-    // constants
-    const prep = '<option class="foodItem" id="f';
-    const end = '</option>';
-
-    for(let i in data) {
-        let item = data[i];
-        str += prep + item.foodId + '">' + item.foodName + '</option>';
-    }
-    $("#list").html(str);
-    listener();
-}
-
-// a click listener for food items
-function listener() {
-
-    // when an item is clicked
-    $(".foodItem").click(function(){
-
-        // show button
-        $("#cmpBtn").show();
-
-        // get item id
-        var foodId = $(this).attr("id");
-        foodId = foodId.substr(1);
-        console.log("id is " + foodId);
-
-        // request info from back end
-        $.post("SearchEngine", {
-            type: "getFood",
-            foodId: foodId
-        })
-        .done(function(d){
-            console.log("trying to parse response");
-            try {
-                // check it conforms
-                var json = JSON.parse(d);
-                json = JSON.parse(json);
-                s = json;
-                console.log("parsing: " + json);
-                console.log("foodId: " + json.foodId);
-                console.log("foodName: " + json.foodName);
-                console.log("calories: " + json.calories);
-
-                // display info
-                const br = '<br>';
-                $("#info").html('<b>' + json.foodName + '</b>' + br
-                    + "calories: " + json.calories
-                );
-            }
-            catch(e) {
-                console.log("error parsing");
-            }
-        });
-    });
-}
-
 </script>
 </html>

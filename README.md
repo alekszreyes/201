@@ -174,7 +174,8 @@ e.g.
 ```javascript
 {
     type: "compare",
-    foodIds: [2, 4]
+    food1: "food1Id",
+    food2: "food2Id"
 }
 ```
 
@@ -191,8 +192,8 @@ e.g.
         sugar: ""
     ],[
 		foodId: 2,
-        name: "Apple",
-        calories: 500,
+        name: "Orange",
+        calories: 300,
 		protein: "", 
         vitamin : "", 
         sugar: ""
@@ -208,6 +209,7 @@ This happens when a user has combined food items and wants to save this into a m
 
 ```javascript
 {
+    type: "saveMeal"
     name: "Veggie Meal",
     content: [3,2,10,19]
 }
@@ -217,17 +219,13 @@ This happens when a user has combined food items and wants to save this into a m
 
 This should only be done by a logged in user. If the request is sent from an account that is not logged, BE notifies so FE can redirect user to the correct page.
 
-if comes from a logged user, make sure you are track the calories that the user is consuming in this meal. Also return the following.
+if comes from a logged user, make sure you are tracking the calories that the user is consuming in this meal. Also return the following.
 
 ```javascript
 { type: "success" }
 ```
 
-if guest, return
 
-```javascript
-{ type: "guest" }
-```
 
 ## SummaryEngine
 

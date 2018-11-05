@@ -6,15 +6,16 @@
 	</head>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript">
-		sessionStorage.setItem("userEmail", "alice@gmail.com");
+		
 	
 		
 		function run() {
+			sessionStorage.setItem("userEmail", "alice@gmail.com");
 			$.ajax ({
 				url: "SummaryEngine",
 				data: {
 					type: "getData",
-					userEmail: "alice@gmail.com"
+					userEmail: sessionStorage.getItem("userEmail"),
 				},
 				
 				success: function(response) {

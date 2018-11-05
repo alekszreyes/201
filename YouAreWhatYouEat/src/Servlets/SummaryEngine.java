@@ -51,14 +51,17 @@ public class SummaryEngine extends HttpServlet {
     }
 
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String email = request.getParameter("userEmail");
+    	String email = (String) request.getSession().getAttribute("userEmail");
     	System.out.println(email);
+    	
     	String json = "";
     	String responseText = "";
     	ArrayList<String> axis = new ArrayList<>();
 		ArrayList<Double> week1 = new ArrayList<>();
 		ArrayList<Double> week2 = new ArrayList<>();
-		
+		if (email == null) {
+    		responseText = "Error: email not revognized";
+    	}
     	try {
     		Class.forName("com.mysql.jdbc.Driver");
     		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nutrition?user=root&password=peter_sheng&useSSL=false");
@@ -126,7 +129,10 @@ public class SummaryEngine extends HttpServlet {
 				week1.add(result.get(14 - i));
 				week2.add(result.get(7 - i));
 			}
-			responseText = "Success";
+			
+			if (responseText.isEmpty()) {
+				responseText = "Success";
+			}
 			
 			
     	} catch (SQLException sqle) {

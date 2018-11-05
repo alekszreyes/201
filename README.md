@@ -221,8 +221,57 @@ This should only be done by a logged in user. If the request is sent from an acc
 
 if comes from a logged user, make sure you are tracking the calories that the user is consuming in this meal. Also return the following.
 
+Include the mealId so that FE knows how to id it for future requests.
+
 ```javascript
-{ type: "success" }
+{ 
+    type: "success",
+    mealId: "4"
+}
+```
+
+### Delete Meal
+
+When deleting a meal, ensure that no other user has a relationship with the same mealId. 
+
+If no other user has a relationship to the same mealId, you can delete the relationship between the mealId and the foodId rows along with the relationship between the mealId and userId. Otherwise, delete only the relationship between the mealId and the userId.
+
+#### Request 
+
+```javascript
+{
+    type: "deleteMeal",
+    mealId: "mealId"
+}
+```
+
+#### Response
+
+```javascript
+{
+    type: "success"
+}
+```
+
+### Make a meal public
+
+Meals are private by default. Upon a call of this call, a meal should be declared public.
+
+#### Request 
+
+```javascript
+{
+    type: "shareMeal",
+    mealId: "mealId"
+}
+```
+
+#### Response
+
+```javascript
+{
+    type: "success"
+}
 ```
 
 

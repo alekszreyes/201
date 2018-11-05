@@ -94,7 +94,6 @@ Log out</a></li>
 <div class="row spaceTop">
     <div class="col-sm-6">
 
-        
         <div class="form-group">
             <label for="list">List of Foods</label>
             <select multiple class="form-control" id="list">
@@ -156,38 +155,48 @@ Log out</a></li>
 
 </div>
 <div class="row spaceTop">
-    <div class="col-sm-9">
+    <div class="col-sm-12">
         <h3>My Meals</h3>
-        <table class="table">
+        <table class="table" id="mealList">
             <tr>
+                <td>
+                    Meal name
+                </td>
                 <td>
                    Ammonia cookie, 
                    Cuisine of Antebellum America, 
                    Apple butter
                 </td>
                 <td>
+                    Private
+                </td>
+                <td>
                     <button class="btn btn-default">Share</button>
+                </td>
+                <td>
+                    <button class="btn btn-default">X</button>
                 </td>
             </tr>
             <tr>
                 <td>
+                    Meal name
+                </td>
+                <td>
                    Ammonia cookie, 
                    Cuisine of Antebellum America, 
                    Apple butter
                 </td>
                 <td>
+                    Private
+                </td>
+                <td>
                     <button class="btn btn-default">Share</button>
+                </td>
+                <td>
+                    <button class="btn btn-default">X</button>
                 </td>
             </tr>
         </table>
-    </div>
-    <div class="col-sm-3">
-        <h3>Details</h3>
-        <p>
-        An ammonia cookie is a cookie made with baking ammonia as a leavener. 
-        In the United States, they are most closely associated 
-        with Scandinavian-American cooking.
-        </p>
     </div>
 </div>
 
@@ -348,6 +357,7 @@ $("#saveMeal").click(function(){
 
     // display modal
     $("#mealModal").modal();
+    $("#mealName").focus();
 });
 
 // this comes from the modal when saving a meal
@@ -368,20 +378,86 @@ $("#saveMealModal").click(function(){
         // print response
         alert("response: " + d);
 
-        // todo: capture meal and diplay it
+        try{
+            var json = JSON.parse(d);
 
-        $("#mealModal").modal("hide");
+            // capture meal and diplay it
+            displayMeal(json.mealId);
 
-        $(".mealFood").each(function(){
-            $(this).click();
-        });
+            $("#mealModal").modal("hide");
+
+            $(".mealFood").each(function(){
+                $(this).click();
+            });
+        } catch(e) {
+            alert("Problem parsing");
+        }
 
         // hide create my meal div
         $("#myMeal").hide();
     });
 });
 
+function displayMeal(mealId) {
+    alert(mealId);
+
+    let name = $("#mealName").val();
+    let ingredients = "";
+    let first = true;
+
+    $(".mealFood").each(function(i,d){
+        if(!first) { ingredients += ", "; }
+        else {
+            first = false;
+        }
+        let name = d.innerHTML;
+        name = name.substr(0, name.length - 3);
+        ingredients += name;
+    });
+
+    let str = '<tr id="r'+ mealId +'"><td>' + name + '</td>'
+        + '<td>' + ingredients + '</td>'
+        + '<td id="p'+mealId+'">Private</td><td>'
+        + '<button class="btn btn-default share" mealId="'+mealId+'">Share</button>'
+        + '</td><td>'
+        + '<button class="btn btn-default delete" mealId="'+mealId+'">X</button>'
+        + '</td>';
+    
+    $(str).prependTo("#mealList > tbody");
+
+    // listener for buttons
+    $(".share").click(function(){
+        let mealId = $(this).attr("mealid");
+        alert("sharing meal with id " + mealId);
+
+        $.post("SearchEngine", {
+            type: "shareEmail",
+            mealId: mealId
+        })
+        .done(function(d){
+            alert("response " + d);
+            $("#p"+ mealId).text("Sharing with friends")
+        });
+    });
+
+    $(".delete").click(function(){
+
+        let mealId = $(this).attr("mealid");
+        alert("deleting meal id " + mealId);
+
+        $.post("SearchEngine", {
+            type: "deleteMeal",
+            mealId: mealId
+        })
+        .done(function(d){
+            alert("response " + d);
+            $("#r"+ mealId).remove();
+        });
+    });
+
+}
 
 </script>
 </body>
 </html>
+

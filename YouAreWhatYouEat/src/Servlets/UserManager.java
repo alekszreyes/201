@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -66,6 +67,7 @@ public class UserManager extends HttpServlet {
     	String type = request.getParameter("type");
     	PrintWriter out = response.getWriter();
     	DatabaseDriver.connect(); // connect to the database
+    	HttpSession session = request.getSession();
     	// user registering
     	if(type != null && type.equals("register")) {
     		String status; // string to store the response status
@@ -95,6 +97,10 @@ public class UserManager extends HttpServlet {
 				Response r = this.getResponse(type, status);
 				String toPass = gson.toJson(r);
 				out.println(toPass);
+				// store the current user in the session
+				if(r.type.equals("success")) {
+					session.setAttribute("currUserEmail", email);
+				}
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
@@ -120,6 +126,9 @@ public class UserManager extends HttpServlet {
 				Response r = this.getResponse(type, status);
 				String toPass = gson.toJson(r);
 				out.println(toPass);
+				if(r.type.equals("success")) {
+					session.setAttribute("currUserEmail", email);
+				}
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}

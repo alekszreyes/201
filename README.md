@@ -275,10 +275,29 @@ Meals are private by default. Upon a call of this call, a meal should be declare
 ```
 
 
-
 ## SummaryEngine
 
-### Requests
+### Get the consumption of the calories in the past two weeks
+
+Frontend requests for summary of the amount of calories in the past two weeks.
+
+### Request
+```javascript
+{
+    type: "getData"
+}
+```
+
+### Response
+Passing amount of calories consumed in the last 14 days to the frontend
+Note: all arrays in the response object have length 7
+```javascript
+{
+    axis: ["Sunday", ...],
+    week1: [45, ...],
+    week2: [23, ...]
+}
+```
 
 ## USDA Food Database
 

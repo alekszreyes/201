@@ -3,29 +3,34 @@ $(function() {
     
     //$("#cmpBtn").hide();
     listener();
+    query();
 
-    $.post("SearchEngine", {
-        type: "search",
-        q: ""
-    })
-    .done(function(d){
-        console.log("trying to parse response " + d);
-        try {
-            // verify data conforms
-            var json = JSON.parse(d);
-            console.log("items passed: " + json.length);
-            s = json;
+    $("#searchBtn").click(function(){ query(); });
 
-            // populate list
-            populateList(json);
+    function query() {
+        $.post("SearchEngine", {
+            type: "search",
+            q: $("#search").val()
+        })
+        .done(function(d){
+            console.log("trying to parse response " + d);
+            try {
+                // verify data conforms
+                var json = JSON.parse(d);
+                console.log("items passed: " + json.length);
+                s = json;
 
-            // click first
-            //$(".foodItem").first().click();
-        }
-        catch(e) {
-            console.log("error parsing");
-        }
-    });
+                // populate list
+                populateList(json);
+
+                // click first
+                //$(".foodItem").first().click();
+            }
+            catch(e) {
+                console.log("error parsing");
+            }
+        });
+    }
 });
 
 function populateList(data) {
@@ -154,6 +159,5 @@ $("#cmpBtn").click( function(){
         compare = true;
     }
 });
-
 
 

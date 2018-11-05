@@ -2,7 +2,11 @@ package DatabaseDriver;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import Servlets.SearchEngine;
+import javafx.util.Pair;
 public class DatabaseDriver {
 	private static Connection conn = null;
 	private static ResultSet rs = null;
@@ -44,20 +48,19 @@ public class DatabaseDriver {
 		}
 	}
 	
-	// End of JDBC database query code
+	// End of JDBC code
 	//***********************************************************************************************************************************************
 	
 	//***********************************************************************************************************************************************
 	// Begin of nutrition database query code
 	
-	// method to query nutrition database
-	public ArrayList<String> QueryNutrition(String toQuery){
-		ArrayList<String> result = new ArrayList<String>();
-		String query =  "SELECT FOOD_DES.NDB_No, FOOD_DES.Long_Desc, NUT_DATA.NDB_No, NUT_DATA.Nutr_No, NUT_DATA.Nutr_Val, NUTR_DEF.NutrDesc\n" + 
-						"FROM FOOD_DES, NUT_DATA, NUTR_DEF\n" + 
-						"WHERE FOOD_DES.Long_Desc LIKE \"?\"\n" + 
-						"AND FOOD_DES.NDB_No = NUT_DATA.NDB_No \n" + 
-						"AND NUT_DATA.Nutr_No = NUTR_DEF.Nutr_No";
+	// method to query nutrition of a specific food
+	public ResultSet QueryNutrition(String toQuery){
+		String query =  "SELECT FOOD_DES.NDB_No, FOOD_DES.Long_Desc, NUT_DATA.NDB_No, NUT_DATA.Nutr_No, NUT_DATA.Nutr_Val, NUTR_DEF.NutrDesc, NUTR_DEF.Units\n" + 
+					"FROM FOOD_DES, NUT_DATA, NUTR_DEF\n" + 
+					"WHERE FOOD_DES.Long_Desc LIKE ?\n" + 
+					"AND FOOD_DES.NDB_No = NUT_DATA.NDB_No \n" + 
+					"AND NUT_DATA.Nutr_No = NUTR_DEF.Nutr_No";
 		try {
 			ps = conn.prepareStatement(query);
 			ps.setString(1, toQuery);
@@ -68,11 +71,97 @@ public class DatabaseDriver {
 		} catch (SQLException sqle){
 			System.out.println("sqle: " + sqle.getMessage());
 		}
-		return result;
+		return rs;
 		
 	}
 	
+	public ResultSet QueryNutritionID(String toQuery){
+		String query =  "SELECT FOOD_DES.NDB_No, FOOD_DES.Long_Desc, NUT_DATA.NDB_No, NUT_DATA.Nutr_No, NUT_DATA.Nutr_Val, NUTR_DEF.NutrDesc, NUTR_DEF.Units\n" + 
+					"FROM FOOD_DES, NUT_DATA, NUTR_DEF\n" + 
+					"WHERE FOOD_DES.Long_Desc LIKE ?\n" + 
+					"AND FOOD_DES.NDB_No = NUT_DATA.NDB_No \n" + 
+					"AND NUT_DATA.Nutr_No = NUTR_DEF.Nutr_No";
+		try {
+			ps = conn.prepareStatement(query);
+			ps.setString(1, toQuery);
+			rs = ps.executeQuery();
+		} catch (SQLException sqle){
+			System.out.println("sqle: " + sqle.getMessage());
+		}
+		return rs;
+		
+	}
+	
+	// method to search for food according to the key given
+	public ArrayList<Pair<Integer, String> > SearchFood(String []searchKey) {
+		ArrayList<Pair<Integer, String> > result = new ArrayList<Pair<Integer, String> >();
+		// search each key one by one
+		for(int i=0; i<searchKey.length; i++) {
+			try {
+				rs = this.QueryNutrition(searchKey[i]);
+				while(rs.next()) {
+					String ID = rs.getString("FOOD_DES.NDB_No");
+					System.out.println(ID);
+					String foodName = rs.getString("FOOD_DES.Long_Desc");
+					Pair<Integer, String> toAdd = new Pair<Integer, String>(Integer.parseInt(ID), foodName);
+					result.add(toAdd);
+				}
+			} catch(SQLException sqle) {
+				System.out.println("sqle: " + sqle.getMessage());
+			}
+		}
+		return result;
+	}
+	
+	// method to get the food info from according to the id of the food given
+	public Map<String, String> getFoodInfo(String foodID){
+		Map<String, String> result = new HashMap();
+		rs = QueryNutritionID(foodID);
+		try {
+			String calories = null;
+			String protein = null;
+			String vitamin= null;
+			String sugar = null;
+			String foodName = null;
+			while(rs.next()) {
+				foodName = rs.getString("FOOD_DES.Long_Desc");
+				if(rs.getString("NutrDesc").toLowerCase().contains("energy") && rs.getString("Units").toLowerCase().equals("kcal")) {
+					calories = rs.getString("Nutr_Val") + " " + rs.getString("Units");
+				}
+				else if(rs.getString("NutrDesc").toLowerCase().contains("protein")) {
+					protein = rs.getString("Nutr_Val") + " " + rs.getString("Units");
+				}
+				else if(rs.getString("NutrDesc").toLowerCase().contains("vitamin c")) {
+					vitamin = rs.getString("Nutr_Val") + " " + rs.getString("Units");
+				}
+				else if(rs.getString("NutrDesc").toLowerCase().contains("sugar")) {
+					sugar = rs.getString("Nutr_Val") + " " + rs.getString("Units");
+				}
+			}
+			// after getting all of the nutrition facts, create pairs and insert them into the result
+			result.put("calories", calories);
+			result.put("protein", protein);
+			result.put("vitamin", vitamin);
+			result.put("sugar", sugar);
+			result.put("foodName", foodName);
+		} catch (SQLException sqle) {
+			System.out.println("sqle: " + sqle.getMessage());
+		}
+		
+		return result;
+	}
+	
 	// End of nutrition database query code
+	//***********************************************************************************************************************************************
+	
+	// Begin of nutrition database update code
+	//***********************************************************************************************************************************************
+	public void InsertDiet(String userEmail, ArrayList<String> food, String dietName) {
+		
+	}
+	
+	
+	// End of nutrition database update code
 	//***********************************************************************************************************************************************
 	
 	
@@ -166,7 +255,6 @@ public class DatabaseDriver {
 	}
 	// End of User database query code
 	//***********************************************************************************************************************************************
-	
 	
 }
 

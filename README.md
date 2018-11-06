@@ -184,19 +184,22 @@ e.g.
 ```javascript
 {
     [
-        foodId: 2,
-        name: "Apple",
-        calories: 500,
-		protein: "", 
-        vitamin : "", 
-        sugar: ""
-    ],[
-		foodId: 2,
-        name: "Orange",
-        calories: 300,
-		protein: "", 
-        vitamin : "", 
-        sugar: ""
+        {
+            foodId: 2,
+            name: "Apple",
+            calories: 500,
+            protein: "", 
+            vitamin : "", 
+            sugar: ""
+        },
+        {
+            foodId: 2,
+            name: "Orange",
+            calories: 300,
+            protein: "", 
+            vitamin : "", 
+            sugar: ""
+        }
     ]
 }
 ```

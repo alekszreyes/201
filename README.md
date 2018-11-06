@@ -183,22 +183,21 @@ e.g.
 
 ```javascript
 {
+    "comparation":
     [
         {
-            foodId: 2,
-            name: "Apple",
-            calories: 500,
-            protein: "", 
-            vitamin : "", 
-            sugar: ""
+            "foodId":1005,
+            "foodName":"Cheese, brick",
+            "calories":"371.000 kcal",
+            "protein":"23.240 g",
+            "sugar":"0.510 g"
         },
         {
-            foodId: 2,
-            name: "Orange",
-            calories: 300,
-            protein: "", 
-            vitamin : "", 
-            sugar: ""
+            "foodId":1006,
+            "foodName":"Cheese, brie",
+            "calories":"334.000 kcal",
+            "protein":"20.750 g",
+            "sugar":"0.450 g"
         }
     ]
 }

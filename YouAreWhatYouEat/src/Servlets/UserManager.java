@@ -99,7 +99,9 @@ public class UserManager extends HttpServlet {
 				out.println(toPass);
 				// store the current user in the session
 				if(r.type.equals("success")) {
-					session.setAttribute("currUserEmail", email);
+					session.setAttribute("userEmail", email);
+					int userID = databaseDriver.getCurrUserID(email);
+					session.setAttribute("userID", userID);
 				}
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
@@ -127,7 +129,9 @@ public class UserManager extends HttpServlet {
 				String toPass = gson.toJson(r);
 				out.println(toPass);
 				if(r.type.equals("success")) {
-					session.setAttribute("currUserEmail", email);
+					session.setAttribute("userEmail", email);
+					int userID = databaseDriver.getCurrUserID(email);
+					session.setAttribute("userID", userID);
 				}
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());

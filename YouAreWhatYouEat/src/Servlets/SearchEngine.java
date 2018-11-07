@@ -128,7 +128,6 @@ public class SearchEngine extends HttpServlet {
     		String foodID2 = request.getParameter("food2");
     		InfoResponse ir1 = new InfoResponse();
     		InfoResponse ir2 = new InfoResponse();
-    		CompareResponse cr = new CompareResponse();
     		// make the query for food1
     		Map<String, String> result1 = databaseDriver.getFoodInfo(foodID1);
     		// pass the information to the response object
@@ -151,10 +150,10 @@ public class SearchEngine extends HttpServlet {
     		ArrayList<InfoResponse> lir = new ArrayList<InfoResponse>();
     		lir.add(ir1);
     		lir.add(ir2);
-    		cr.comparation = lir;
     		try {
-				String toPass = gson.toJson(cr);
+				String toPass = gson.toJson(lir);
 				out.println(toPass);
+				System.out.println(toPass);
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
@@ -239,7 +238,7 @@ public class SearchEngine extends HttpServlet {
 			}
     	}
     	
-    	type = "shareMeal";
+    	//type = "shareMeal";
     	// user is sharing a specified meal with someone else --> make the meal public
     	if(type != null && type.equals("shareMeal")) {
     		String dietID = request.getParameter("mealId");

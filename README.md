@@ -513,6 +513,26 @@ function ConnectToServer() {
 	socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss/" + id);
 ```
 
+## Notification
+Method name - showMessage(data) 
+
+Location - notify.js 
+
+Purpose - to display message boxes given a string
+
+Example
+```html
+<button type="button" onClick="showMessage('Testing')">Click Me!</button>
+```
+
+Requirements:
+Put these two script tags in the following locations
+1) located IN the head section of the html file
+	<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script> 
+
+2) located AFTER the body section of the html file
+	<script src="notify.js"></script>  
+
 
 ## USDA Food Database
 

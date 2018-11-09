@@ -141,6 +141,86 @@ Back end response
 
 The response exists so that FE knows that BE acknowledged request as opposed as the connection broke or the like.
 
+#### Suggestions (People)
+
+This call should get people that the current user is not currently following. 
+
+The field *number* in the request determines how many users return. 
+
+The response field *likes* returns a few item foods that the suggested person has included in her/his diet.
+
+##### Request
+
+```javascript
+{
+    type: "Suggestions",
+    number: 1
+}
+```
+
+##### Response
+
+```javascript
+{
+    userId: 3,
+    name: "Veronica",
+    meals: "Vegan Meal, Meat diet",
+    likes: "Smoothies, apples"
+}
+```
+
+#### Suggested Meals
+
+Pull friends' meals that are public or have been suggested to this user. 
+
+*createdBy* returns the name of the creator of  the meal.
+
+##### Request
+
+```javascript
+{
+    type: "suggestedMeals"
+}
+```
+
+##### Response
+
+```javascript
+{
+    mealId: 3,
+    foodItems: "Apple, Orange, Lettuce",
+    createdBy: "Taylor Swift"
+}
+```
+
+#### Followers
+
+Return an array of the followers of this user
+
+##### Request
+
+```javascript
+{
+    type: "followers"
+}
+```
+
+##### Response
+
+```javascript
+[{
+	userId: 3,
+    name: "Taylor Swift",
+    picture "taylor.jpg"
+},{
+	userId: 4,
+    name: "Mickey Mouse",
+    picture "mouse.jpg"
+}]
+```
+
+
+
 ## SearchEngine
 
 #### Search
@@ -327,6 +407,21 @@ Note: all arrays in the response object have length 7
     week2: [23, ...]
 }
 ```
+## Web Socket and Multi-Threading   
+
+Use the basic way to initialize the web socket in any of the front-end pages, for ex.
+```javascript
+function ConnectToServer() {
+	socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss");
+	// Set up the four basic web-socket functions here
+}
+```
+**Note:** Currently it is not clear whether the session storage is shared between a regular servlet and a web socket servlet. If it is possible, there is no need to pass in an id parameter from the front end. Otherwise we'll have to pass an id parameter to make the socket aware of which user the current session belongs to. The web-socket utilize a path parameter to capture the id, so bascally it's calling a sub-routine in addition to the websocket server.
+*ex.*
+```javascript
+	socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss/" + id);
+```
+
 
 ## USDA Food Database
 

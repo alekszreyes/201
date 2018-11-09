@@ -1,6 +1,7 @@
 var s = "";
 $(function() {
-    
+	connectToServer();
+	
     //$("#cmpBtn").hide();
     listener();
     query();

@@ -437,15 +437,18 @@ If no other user has a relationship to the same mealId, you can delete the relat
 }
 ```
 
-### Make a meal public
+### Toggle meal privacy
 
-Meals are private by default. Upon a call of this call, a meal should be declared public.
+Meals are private by default. Upon a call of this call, a meal should be declared 
+
+- public if it is private or
+- private if it is public
 
 #### Request 
 
 ```javascript
 {
-    type: "shareMeal",
+    type: "toggleMealPrivacy",
     mealId: "mealId"
 }
 ```
@@ -454,10 +457,17 @@ Meals are private by default. Upon a call of this call, a meal should be declare
 
 ```javascript
 {
-    type: "success"
+    newStatus: "Public"
 }
 ```
 
+or 
+
+```javascript
+{
+    newStatus: "Private"
+}
+```
 
 ## SummaryEngine
 
@@ -528,10 +538,10 @@ Example
 Requirements:
 Put these two script tags in the following locations
 1) located IN the head section of the html file
-	<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script> 
+​	<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script> 
 
 2) located AFTER the body section of the html file
-	<script src="notify.js"></script>  
+​	<script src="notify.js"></script>  
 
 
 ## USDA Food Database

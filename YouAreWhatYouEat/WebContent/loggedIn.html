@@ -418,12 +418,15 @@ function displayMeal(mealId) {
     addMealRow(mealId, name, ingredients, "Private");
 }
 
-function addMealRow(mealId, name, ingredients, privacy) {
+function addMealRow(mealId, name, ingredients, privacyS) {
+
+    let privacy = (privacyS == "Public") ? "Sharing with Friends" : "Private";
+    let buttonVal = (privacyS == "Public") ? "Make Private" : "Share";
 
     let str = '<tr id="r'+ mealId +'"><td>' + name + '</td>'
         + '<td>' + ingredients + '</td>'
         + '<td id="p'+mealId+'">' + privacy + '</td><td>'
-        + '<button class="btn btn-default share" mealId="'+mealId+'">Share</button>'
+        + '<button class="btn btn-default share" mealId="'+mealId+'">' + buttonVal + '</button>'
         + '</td><td>'
         + '<button class="btn btn-default delete" mealId="'+mealId+'">X</button>'
         + '</td>';
@@ -434,14 +437,21 @@ function addMealRow(mealId, name, ingredients, privacy) {
     $(".share").click(function(){
         let mealId = $(this).attr("mealid");
         alert("sharing meal with id " + mealId);
+        var obj = $(this);
 
         $.post("SearchEngine", {
-            type: "shareEmail",
+            type: "toggleMealPrivacy",
             mealId: mealId
         })
         .done(function(d){
             alert("response " + d);
-            $("#p"+ mealId).text("Sharing with friends")
+            var json = JSON.parse(d);
+
+            let privacy = (json.newStatus == "Public") ? "Sharing with Friends" : "Private";
+            let buttonVal = (json.newStatus == "Public") ? "Make Private" : "Share";
+
+            $("#p"+ mealId).text(privacy);
+            obj.text( buttonVal );
         });
     });
 
@@ -478,3 +488,4 @@ $(function() {
 </script>
 </body>
 </html>
+

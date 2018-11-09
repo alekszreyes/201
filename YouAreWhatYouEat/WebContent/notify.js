@@ -17,12 +17,12 @@ $('head').append('<script type="text/javascript" src="https://cdnjs.cloudflare.c
 
 document.body.innerHTML += '<div class="notifications bottom-right"></div>';
 
-$(window).load(function(){
+function showMessage(data){
 	$(document).ready(function () {
 	    $('.bottom-right').notify({
-        message: {
-            text: 'Aw yeah, It works!'
-        }
-    }).show();
-});
-});
+	    message: {
+	        text: data
+	    }
+	}).show();
+	});
+}

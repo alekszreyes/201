@@ -416,9 +416,14 @@ function displayMeal(mealId) {
         ingredients += name;
     });
 
+    addMealRow(mealId, name, ingredients, "Private");
+}
+
+function addMealRow(mealId, name, ingredients, privacy) {
+
     let str = '<tr id="r'+ mealId +'"><td>' + name + '</td>'
         + '<td>' + ingredients + '</td>'
-        + '<td id="p'+mealId+'">Private</td><td>'
+        + '<td id="p'+mealId+'">' + privacy + '</td><td>'
         + '<button class="btn btn-default share" mealId="'+mealId+'">Share</button>'
         + '</td><td>'
         + '<button class="btn btn-default delete" mealId="'+mealId+'">X</button>'
@@ -458,7 +463,19 @@ function displayMeal(mealId) {
 
 }
 
+$(function() {
+    $.post("SearchEngine", {
+        type: "getMeals",
+    })
+    .done(function(data) {
+        var json = JSON.parse(data);
+        
+        $.each(json, function(i, meal) {
+            addMealRow(meal.mealId, meal.name, meal.foodItems, meal.privacy);
+        });
+    });
+});
+
 </script>
 </body>
 </html>
-

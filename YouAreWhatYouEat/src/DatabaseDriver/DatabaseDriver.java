@@ -116,7 +116,7 @@ public class DatabaseDriver {
 				int count = 0;
 				while(rs.next() && count < 20) {
 					String ID = rs.getString("FOOD_DES.NDB_No");
-					System.out.println(ID);
+					//System.out.println(ID);
 					String foodName = rs.getString("FOOD_DES.Long_Desc");
 					Pair<Integer, String> toAdd = new Pair<Integer, String>(Integer.parseInt(ID), foodName);
 					if(!result.contains(toAdd)) {
@@ -363,7 +363,7 @@ public class DatabaseDriver {
 				ps = conn.prepareStatement(query);
 				ps.setString(1, firstName + " " + lastName);
 				ps.setString(2, password);
-				ps.setString(3, picture);
+				ps.setString(3, email + ".png");
 				ps.setString(4, email);
 				ps.executeUpdate();
 				msg = "success";
@@ -395,6 +395,39 @@ public class DatabaseDriver {
 		}
 		return userID;
 	}
+	
+	public ArrayList<Map<String, String> > SuggestUser(int num, int currUser){
+		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
+		
+		// get all of the users that are not the current user
+		String query = "SELECT * FROM Users, DietFood, DietUser \n" + 
+				"WHERE DietUser.userID = Users.userID \n" + 
+				"AND DietFood.dietID = DietUser.dietID\n" +
+				"AND Users.userID != ?";
+		try {
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			rs = ps.executeQuery();
+			int count = 0;
+			while(rs.next()) {
+				count++;
+				Map<String, String> addUser = new HashMap();
+				addUser.put("userId", Integer.toString(rs.getInt("userID")));
+				addUser.put("picture", rs.getString("profilePic"));
+				addUser.put("name", rs.getString("userName"));
+				
+				
+			}
+		} catch (SQLException e) {
+			System.out.println("sqle: " + e.getMessage());
+		}
+		
+		
+		
+		
+		return result;
+	}
+	
 	// End of User database query code
 	//***********************************************************************************************************************************************
 	

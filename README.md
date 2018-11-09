@@ -164,12 +164,14 @@ The response field *likes* returns a few item foods that the suggested person ha
 [
     {
         userId: 3,
+        picture: "picture.png",
         name: "Veronica",
         meals: "Vegan Meal, Meat diet",
         likes: "Smoothies, apples"
     },
     {
         userId: 4,
+        picture: "picture.png",
         name: "John",
         meals: "Pork meal, Fish diet",
         likes: "Tea, Coffee"
@@ -182,7 +184,7 @@ The response field *likes* returns a few item foods that the suggested person ha
 
 Pull friends' meals that are public or have been suggested to this user. 
 
-*createdBy* returns the name of the creator of  the meal.
+*createdBy* returns the name of the creator of the meal.
 
 ##### Request
 
@@ -450,6 +452,22 @@ Note: all arrays in the response object have length 7
     week2: [23, ...]
 }
 ```
+
+## Prority Working Queue of Backend
+1. Integrating saveMeal, addMeal, shareMeal and deleteMeal with the front end
+   (already tested with simulation on the backend)
+
+2. Implement Suggestions and integrate with front end
+
+3. Implement suggestedMeals and integrate with front end
+
+4. Implement followers and integrate with front end
+
+5. Implement FollowRelation and integrate with front end
+
+6. Figuring out a way to store profile pictures on the backend
+
+
 ## Web Socket and Multi-Threading   
 
 Use the basic way to initialize the web socket in any of the front-end pages, for ex.

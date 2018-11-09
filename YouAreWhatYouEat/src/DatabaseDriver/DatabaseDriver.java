@@ -2,6 +2,7 @@ package DatabaseDriver;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,13 +15,28 @@ public class DatabaseDriver {
 	private static Statement s = null;
 	
 	//***********************************************************************************************************************************************
+	// Begin of universal helper functions
+	// method to pre-process the foodID passed in the make sure that its length is 5,
+	// which is the length of the foodID inside the database
+	String StandardizeDietID(String dietID) {
+		if(dietID.length() != 5) {
+			for(int i=0; i<5-dietID.length(); i++) {
+				dietID = "0" + dietID;
+			}
+		}
+		String standardized = dietID;
+		return standardized;
+	}
+	
+	// End of universal helper functions
+	
+	//***********************************************************************************************************************************************
 	// Begin of JDBC code
 	// method to connect to the database
 	public static void connect(){
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nutrition?user=root&password=lunjohnzhang&useSSL=false");
-			//connFood = DriverManager.getConnection("jdbc:mysql://localhost/YouAreWhatYouEatUsers?user=root&password=lunjohnzhang&useSSL=false");
 			System.out.println("Database connected!");
 		} catch (ClassNotFoundException e) {
 			System.out.println("cnf: " + e.getMessage());
@@ -58,15 +74,13 @@ public class DatabaseDriver {
 	public ResultSet QueryNutrition(String toQuery){
 		String query =  "SELECT FOOD_DES.NDB_No, FOOD_DES.Long_Desc, NUT_DATA.NDB_No, NUT_DATA.Nutr_No, NUT_DATA.Nutr_Val, NUTR_DEF.NutrDesc, NUTR_DEF.Units\n" + 
 					"FROM FOOD_DES, NUT_DATA, NUTR_DEF\n" + 
-					"WHERE FOOD_DES.Long_Desc LIKE ?\n" + 
+					"WHERE FOOD_DES.Long_Desc LIKE ? \n" + 
 					"AND FOOD_DES.NDB_No = NUT_DATA.NDB_No \n" + 
 					"AND NUT_DATA.Nutr_No = NUTR_DEF.Nutr_No";
 		try {
 			ps = conn.prepareStatement(query);
-			ps.setString(1, toQuery);
-			rs = ps.executeQuery();
-			// process the data below
-			
+			ps.setString(1, "%" + toQuery+ "%");
+			rs = ps.executeQuery();			
 			
 		} catch (SQLException sqle){
 			System.out.println("sqle: " + sqle.getMessage());
@@ -76,9 +90,10 @@ public class DatabaseDriver {
 	}
 	
 	public ResultSet QueryNutritionID(String toQuery){
-		String query =  "SELECT FOOD_DES.NDB_No, FOOD_DES.Long_Desc, NUT_DATA.NDB_No, NUT_DATA.Nutr_No, NUT_DATA.Nutr_Val, NUTR_DEF.NutrDesc, NUTR_DEF.Units\n" + 
+		toQuery = this.StandardizeDietID(toQuery);
+		String query = "SELECT FOOD_DES.NDB_No, FOOD_DES.Long_Desc, NUT_DATA.NDB_No, NUT_DATA.Nutr_No, NUT_DATA.Nutr_Val, NUTR_DEF.NutrDesc, NUTR_DEF.Units\n" + 
 					"FROM FOOD_DES, NUT_DATA, NUTR_DEF\n" + 
-					"WHERE FOOD_DES.Long_Desc LIKE ?\n" + 
+					"WHERE FOOD_DES.NDB_No = ?\n" + 
 					"AND FOOD_DES.NDB_No = NUT_DATA.NDB_No \n" + 
 					"AND NUT_DATA.Nutr_No = NUTR_DEF.Nutr_No";
 		try {
@@ -89,7 +104,6 @@ public class DatabaseDriver {
 			System.out.println("sqle: " + sqle.getMessage());
 		}
 		return rs;
-		
 	}
 	
 	// method to search for food according to the key given
@@ -99,12 +113,16 @@ public class DatabaseDriver {
 		for(int i=0; i<searchKey.length; i++) {
 			try {
 				rs = this.QueryNutrition(searchKey[i]);
-				while(rs.next()) {
+				int count = 0;
+				while(rs.next() && count < 20) {
 					String ID = rs.getString("FOOD_DES.NDB_No");
 					System.out.println(ID);
 					String foodName = rs.getString("FOOD_DES.Long_Desc");
 					Pair<Integer, String> toAdd = new Pair<Integer, String>(Integer.parseInt(ID), foodName);
-					result.add(toAdd);
+					if(!result.contains(toAdd)) {
+						result.add(toAdd);
+						count++;
+					}
 				}
 			} catch(SQLException sqle) {
 				System.out.println("sqle: " + sqle.getMessage());
@@ -154,14 +172,123 @@ public class DatabaseDriver {
 	// End of nutrition database query code
 	//***********************************************************************************************************************************************
 	
-	// Begin of nutrition database update code
 	//***********************************************************************************************************************************************
-	public void InsertDiet(String userEmail, ArrayList<String> food, String dietName) {
-		
+	// Begin of diet database update code
+	public int InsertDiet(int userID, ArrayList<String> food, String dietName) {
+		// standardize the food id in food
+		for(int i=0; i<food.size(); i++) {
+			food.set(i, this.StandardizeDietID(food.get(i)));
+		}
+		//get the userID and the current largest dietID
+		String query = "";
+		int dietID = 0;
+		try {
+			// find the current largest Diet ID
+			query = "SELECT dietID FROM DietFood ORDER BY dietID DESC LIMIT 1";
+			ps = conn.prepareStatement(query);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				dietID = rs.getInt("dietID");
+			}
+			dietID += 1; // get the new id by incrementing the largest id
+			
+			for(int i=0; i<food.size(); i++) {
+				// insert into dietFood
+				query = "INSERT INTO DietFood(dietID, dietName, foodID) VALUES(?, ?, ?)";
+				ps = conn.prepareStatement(query);
+				ps.setInt(1, dietID);
+				ps.setString(2, dietName);
+				System.out.println("to insert food: " + food.get(i));
+				ps.setString(3, food.get(i));
+				ps.executeUpdate();
+			}
+			// insert into dietUser
+			query = "INSERT INTO DietUser(userID, dietID, creationTime, access) VALUES(?, ?, ?, ?)";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, userID);
+			ps.setInt(2, dietID);
+			// get SQL style current date
+			java.sql.Date sqlDate = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
+			ps.setString(3, sqlDate.toString());
+			ps.setInt(4, 0);
+			ps.executeUpdate();
+		} catch (SQLException sqle) {
+			System.out.println("sqle: " + sqle.getMessage());
+		}
+		return dietID;
 	}
 	
+	public boolean deleteMeal(int userID, String mealID) {
+		int dietID = Integer.parseInt(mealID);
+		try {
+			String query = "SELECT dietID FROM DietUser WHERE dietID = ?";
+			// get the number of appearance of the specified diet in DietUser table and DietFood table
+			// number of appearance in DietUser
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, dietID);
+			rs = ps.executeQuery();
+			int numDietInDietUser = 0;
+			while(rs.next()) {
+				numDietInDietUser++;
+			}
+			System.out.println("num: " + numDietInDietUser);
+			if(numDietInDietUser == 0) {
+				return false;
+			}
+			// if only one user has the current diet, delete the diet from both tables
+			// else delete only from DietUser
+			query = "DELETE FROM DietUser WHERE dietID = ? AND userID = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, dietID);
+			ps.setInt(2, userID);
+			ps.executeUpdate();
+			if(numDietInDietUser == 1) {
+				query = "DELETE FROM DietFood WHERE dietID = ?";
+				ps = conn.prepareStatement(query);
+				ps.setInt(1, dietID);
+				ps.executeUpdate();
+			}
+		} catch (SQLException sqle) {
+			System.out.println("sqle: " + sqle.getMessage());
+		}
+		return true;
+	}
 	
-	// End of nutrition database update code
+	public boolean tangleSharing(int userID, String mealID) {
+		int dietID = Integer.parseInt(mealID);
+		try {
+			String query = "SELECT access FROM DietUser WHERE dietID = ? AND userID = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, dietID);
+			ps.setInt(2, userID);
+			rs = ps.executeQuery();
+			int currAccess = -1;
+			while(rs.next()) {
+				currAccess = rs.getInt("access");
+			}
+			// if the specified user with the meal is not found, return an error
+			if(currAccess == -1) {
+				return false;
+			}
+			// else, process the update
+			query = "UPDATE DietUser SET access = ? WHERE dietID = ? AND userID = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(2, dietID);
+			ps.setInt(3, userID);
+			if(currAccess == 0) {
+				ps.setInt(1, 1);
+			}
+			else {
+				ps.setInt(1, 0);
+			}
+			ps.executeUpdate();
+		} catch (SQLException sqle) {
+			System.out.println("sqle: " + sqle.getMessage());
+		}
+		return true;
+	}
+	
+	// End of diet database update code
 	//***********************************************************************************************************************************************
 	
 	
@@ -175,8 +302,6 @@ public class DatabaseDriver {
 		String msg = "";
 		String query = "SELECT userEmail FROM Users WHERE userEmail=?";
 		try {
-			System.out.println(query);
-			System.out.println(ps);
 			ps = conn.prepareStatement(query);
 			ps.setString(1, email);
 			rs = ps.executeQuery();
@@ -252,6 +377,23 @@ public class DatabaseDriver {
 		}
 		return msg;
 		 
+	}
+	
+	public int getCurrUserID(String userEmail) {
+		int userID = -1;
+		String query = "SELECT userID FROM Users WHERE userEmail = ?";
+		try {
+			ps = conn.prepareStatement(query);
+			ps.setString(1, userEmail);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				userID = rs.getInt("userID");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return userID;
 	}
 	// End of User database query code
 	//***********************************************************************************************************************************************

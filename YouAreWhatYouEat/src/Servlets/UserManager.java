@@ -20,6 +20,10 @@ class Response{
 	String message;
 }
 
+class LogoutResponse{
+	String type;
+}
+
 
 /**
  * Servlet implementation class UserManager
@@ -28,6 +32,7 @@ class Response{
 public class UserManager extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private DatabaseDriver databaseDriver = new DatabaseDriver();
+	private Gson gson = new Gson();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -93,13 +98,16 @@ public class UserManager extends HttpServlet {
     		
     		// create the JSON object to and pass it to the front end
     		try {
-				Gson gson = new Gson();
 				Response r = this.getResponse(type, status);
 				String toPass = gson.toJson(r);
 				out.println(toPass);
 				// store the current user in the session
 				if(r.type.equals("success")) {
-					session.setAttribute("currUserEmail", email);
+					session.setAttribute("userEmail", email);
+					System.out.println("in userManager, userEmail: " + email);
+					int userID = databaseDriver.getCurrUserID(email);
+					session.setAttribute("userID", userID);
+					System.out.println("userID: " + userID);
 				}
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
@@ -122,17 +130,45 @@ public class UserManager extends HttpServlet {
     		// create the JSON object to and pass it to the front end
     		try {
     			System.out.println(status);
-				Gson gson = new Gson();
 				Response r = this.getResponse(type, status);
 				String toPass = gson.toJson(r);
 				out.println(toPass);
 				if(r.type.equals("success")) {
-					session.setAttribute("currUserEmail", email);
+					session.setAttribute("userEmail", email);
+					int userID = databaseDriver.getCurrUserID(email);
+					session.setAttribute("userID", userID);
 				}
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
     	}
+    	
+    	if(type != null && type.equals("logout")) {
+    		LogoutResponse lr = new LogoutResponse();
+    		lr.type = "success";
+    		try {
+    			String toPass = gson.toJson(lr);
+    			out.println(toPass);
+    		} catch (Exception e) {
+    			System.out.println("JSON: " + e.getMessage());
+    		}
+    	}
+    	
+    	if(type != null && type.equals("Suggestions")) {
+    		
+    	}
+    	
+    	if(type != null && type.equals("suggestedMeals")) {
+    		
+    	}
+    	
+    	if(type != null && type.equals("followers")) {
+    		
+    	}
+    	
+    	
+    	
+    	
     	DatabaseDriver.close(); // close the connection
     }
 }

@@ -46,21 +46,30 @@ I built some tests that will let you know what answer are you sending to the fro
 
 ##### Example
 
-if fails,
+if the user has already exists,
 
 ```javascript
 {
     type: "exist",
-    message: "Account already exists with this email."
+    message: "Account already exists with this email!"
 }
 ```
 
-if successful,
+if successfully created an account, 
 
 ```javascript
 {
     type: "success",
-    message: "3"
+    message: "3Successfully registered!"
+}
+```
+
+if the user does not fill in all of the information
+
+```javascript
+{
+    type: "invalid",
+    message: "Error! Some information are missing!"
 }
 ```
 
@@ -84,23 +93,33 @@ if successful,
 
 ##### Example
 
-If fails,
+If the user trying to log in does not exist in the database,
 
 ```javascript
 {
     type: "notexist",
-    message: "Account already exists."
+    message: "The specified the user does not exist! Please check your email and password again!"
 }
 ```
 
-if successful,
+if the user successfully logged in,
 
 ```javascript
 {
     type: "success",
-    message: "3"
+    message: "Successfully logged in!"
 }
 ```
+
+if the user does not fill all of the information
+
+```javascript
+{
+    type: "invalid",
+    message: "Error! Some information are missing!"
+}
+```
+
 
 #### Logout
 
@@ -227,8 +246,14 @@ e.g.
 
 ```javascript
 [
-    {"foodId":"2", "foodName":"apple"},
-    {"foodId":"3", "foodName":"orange"}
+    {
+        "foodId":"2", 
+        "foodName":"apple"
+    },
+    {
+        "foodId":"3", 
+        "foodName":"orange"
+    }
 ]
 ```
 
@@ -241,9 +266,12 @@ e.g.
 
 ```javascript
 {
-    foodId: 3, foodName: "Apple", 
-        calories: "500", protein: "", 
-        vitamin : "", sugar: ""
+    foodId: 3,
+    foodName: "Apple",
+    calories: "500",
+    protein: "",
+    vitamin : "",
+    sugar: ""
 }
 ```
 

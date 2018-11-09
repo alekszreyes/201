@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Summary Test</title>
+	</head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+	
+		
+		function run() {
+			sessionStorage.setItem("userEmail", "alice@gmail.com");
+			$.ajax ({
+				url: "SummaryEngine",
+				data: {
+					type: "getData",
+					userEmail: sessionStorage.getItem("userEmail"),
+				},
+				
+				success: function(response) {
+					console.log("HURRAY");
+				}
+				
+			});
+		}
+	</script>
+<body onload="run()">
+	
+</body>
+</html>

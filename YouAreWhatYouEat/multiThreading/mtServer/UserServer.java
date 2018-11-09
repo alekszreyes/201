@@ -4,31 +4,36 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpSession;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
-import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 import user.RegisteredUser;
 import user.UserList;
 
-@ServerEndpoint (value="/ss/{id}")
+@ServerEndpoint (value="/ss", configurator = GetHttpSessionConfigurator.class)
 public class UserServer {
 
 	private static UserList users = new UserList();
 	//private Vector<Session> sessions;
 	private static ConcurrentHashMap<Session, Integer> sessions = new ConcurrentHashMap<>();
+	private HttpSession httpSession;
+	int id;
 	public UserServer() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	@OnOpen
-	public void open(@PathParam("id") int id, Session session) {
+	public void open(Session session, EndpointConfig config) {
 		// TODO: retrieve the actual user from the user database and got it captured by this method
 		// currently substituted with an imaginary user
+		httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+		this.id = (int) httpSession.getAttribute("userID");
 		System.out.println("Connection from user id " + id);
 		if (users.isActive(id)) {
 			sessions.put(session, id);
@@ -54,7 +59,7 @@ public class UserServer {
 	}
 	
 	@OnMessage
-	public void message(@PathParam("id") int id, String message, Session session) {
+	public void message(String message, Session session) {
 		System.out.println("Received message from user " + id + ": " + message);
 		for (Map.Entry<Session, Integer> su: sessions.entrySet()) {
 			if (((RegisteredUser) users.getUser(su.getValue())).isFollowing(id)) {
@@ -68,7 +73,7 @@ public class UserServer {
 	}
 	
 	@OnClose
-	public void close(@PathParam("id") int id, Session session) {
+	public void close(Session session) {
 		System.out.println("Disconnection from id: " + id);
 		if (session == null) {
 			System.out.println("Note: Close method called on null object");

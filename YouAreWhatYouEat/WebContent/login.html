@@ -119,6 +119,9 @@ Log in</a></li>
                 alert("message: " + json.message);
 
                 if(json.type == "success") {
+                	connectToServer();
+                	alert("here is where the connection should've been established");
+                	socket.send("A user has just logged in");
                     window.location.href="loggedIn.html";
                 }
                 else {

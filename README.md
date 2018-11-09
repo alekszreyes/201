@@ -154,19 +154,28 @@ The response field *likes* returns a few item foods that the suggested person ha
 ```javascript
 {
     type: "Suggestions",
-    number: 1
+    number: 2
 }
 ```
 
 ##### Response
 
 ```javascript
-{
-    userId: 3,
-    name: "Veronica",
-    meals: "Vegan Meal, Meat diet",
-    likes: "Smoothies, apples"
-}
+[
+    {
+        userId: 3,
+        name: "Veronica",
+        meals: "Vegan Meal, Meat diet",
+        likes: "Smoothies, apples"
+    },
+    {
+        userId: 4,
+        name: "John",
+        meals: "Pork meal, Fish diet",
+        likes: "Tea, Coffee"
+    }
+]
+
 ```
 
 #### Suggested Meals

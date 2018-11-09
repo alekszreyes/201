@@ -354,6 +354,37 @@ e.g.
 
 ```
 
+### Get meals
+
+Gets all the user meals
+
+#### Request
+
+```javascript
+{
+    type: "getMeals"
+}
+```
+
+#### Response
+
+```javascript
+[
+    {
+        "mealId": 3
+        "name": "Veggie Meal",
+        "foodItems": "Apple, cookie, butter",
+        "privacy": "Private"
+    },
+    {
+		"mealId": 3
+        "name": "Burger Meal",
+        "foodItems": "Meat, bread, butter",
+        "privacy": "Public"
+    }
+]
+```
+
 ### Create a meal
 
 #### Request

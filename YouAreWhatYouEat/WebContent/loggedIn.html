@@ -129,7 +129,7 @@ Log out</a></li>
     </div>
     <div class="col-sm-6">
         <h3>Nutritional Information</h3>
-        <p>
+        <p id="info">
             List of food objects, with each food object containing: <br>
             kcal per 100gr, <br>
             protein per 100 grams, <br>
@@ -372,7 +372,7 @@ $("#saveMealModal").click(function(){
     $.post("SearchEngine", {
         type: "saveMeal",
         name: $("#mealName").val(),
-        mealItems: JSON.stringify( mealItems )
+        content: JSON.stringify( mealItems )
     })
     .done(function(d){
         // print response
@@ -460,3 +460,4 @@ function displayMeal(mealId) {
 </script>
 </body>
 </html>
+

@@ -219,6 +219,40 @@ Return an array of the followers of this user
 }]
 ```
 
+#### Tangle (add or remove) Follower Relation
+
+Add or remove a follow relation between two users
+
+Given two users user1 and user2, if user1 is following user2, delete the follow relation. 
+Otherwise let user1 follow user2.
+
+##### Request
+
+```javascript
+{
+    type: "FollowRelation",
+    userId1: 1,
+    userId2: 2
+}
+```
+
+##### Response
+
+If the backend added their relation
+
+```javascript
+{
+    message: "relation added"
+}
+```
+
+if the backend deleted their relation
+
+```javascript
+{
+    message: "relation deleted"
+}
+```
 
 
 ## SearchEngine

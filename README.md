@@ -515,11 +515,15 @@ function ConnectToServer() {
 
 ## Notification
 Method name - showMessage(data) 
+
 Location - notify.js 
+
 Purpose - to display message boxes given a string
 
 Example
+```html
 <button type="button" onClick="showMessage('Testing')">Click Me!</button>
+```
 
 Requirements:
 Put these two script tags in the following locations

@@ -160,4 +160,18 @@ $("#cmpBtn").click( function(){
     }
 });
 
+var socket;
 
+function connectToServer() {
+    socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss");
+
+    socket.onopen = function(event){
+        console.log("Connected to websocket");
+    }
+    socket.onmessage = function(event){
+        alert(event.data);
+    }
+    socket.onclose = function(event){
+        console.log("Disconnected");
+    }
+}

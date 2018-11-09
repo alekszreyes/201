@@ -46,21 +46,30 @@ I built some tests that will let you know what answer are you sending to the fro
 
 ##### Example
 
-if fails,
+if the user has already exists,
 
 ```javascript
 {
     type: "exist",
-    message: "Account already exists with this email."
+    message: "Account already exists with this email!"
 }
 ```
 
-if successful,
+if successfully created an account, 
 
 ```javascript
 {
     type: "success",
-    message: "3"
+    message: "3Successfully registered!"
+}
+```
+
+if the user does not fill in all of the information
+
+```javascript
+{
+    type: "invalid",
+    message: "Error! Some information are missing!"
 }
 ```
 
@@ -84,23 +93,33 @@ if successful,
 
 ##### Example
 
-If fails,
+If the user trying to log in does not exist in the database,
 
 ```javascript
 {
     type: "notexist",
-    message: "Account already exists."
+    message: "The specified the user does not exist! Please check your email and password again!"
 }
 ```
 
-if successful,
+if the user successfully logged in,
 
 ```javascript
 {
     type: "success",
-    message: "3"
+    message: "Successfully logged in!"
 }
 ```
+
+if the user does not fill all of the information
+
+```javascript
+{
+    type: "invalid",
+    message: "Error! Some information are missing!"
+}
+```
+
 
 #### Logout
 
@@ -121,6 +140,120 @@ Back end response
 ```
 
 The response exists so that FE knows that BE acknowledged request as opposed as the connection broke or the like.
+
+#### Suggestions (People)
+
+This call should get people that the current user is not currently following. 
+
+The field *number* in the request determines how many users return. 
+
+The response field *likes* returns a few item foods that the suggested person has included in her/his diet.
+
+##### Request
+
+```javascript
+{
+    type: "Suggestions",
+    number: 1
+}
+```
+
+##### Response
+
+```javascript
+{
+    userId: 3,
+    name: "Veronica",
+    meals: "Vegan Meal, Meat diet",
+    likes: "Smoothies, apples"
+}
+```
+
+#### Suggested Meals
+
+Pull friends' meals that are public or have been suggested to this user. 
+
+*createdBy* returns the name of the creator of  the meal.
+
+##### Request
+
+```javascript
+{
+    type: "suggestedMeals"
+}
+```
+
+##### Response
+
+```javascript
+{
+    mealId: 3,
+    foodItems: "Apple, Orange, Lettuce",
+    createdBy: "Taylor Swift"
+}
+```
+
+#### Followers
+
+Return an array of the followers of this user
+
+##### Request
+
+```javascript
+{
+    type: "followers"
+}
+```
+
+##### Response
+
+```javascript
+[{
+	userId: 3,
+    name: "Taylor Swift",
+    picture "taylor.jpg"
+},{
+	userId: 4,
+    name: "Mickey Mouse",
+    picture "mouse.jpg"
+}]
+```
+
+#### Tangle (add or remove) Follower Relation
+
+Add or remove a follow relation between two users
+
+Given two users user1 and user2, if user1 is following user2, delete the follow relation. 
+Otherwise let user1 follow user2.
+
+##### Request
+
+```javascript
+{
+    type: "FollowRelation",
+    userId1: 1,
+    userId2: 2
+}
+```
+
+##### Response
+
+If the backend added their relation
+
+```javascript
+{
+    message: "relation added"
+}
+```
+
+if the backend deleted their relation
+
+```javascript
+{
+    message: "relation deleted"
+}
+```
+
 
 ## SearchEngine
 
@@ -147,8 +280,14 @@ e.g.
 
 ```javascript
 [
-    {"foodId":"2", "foodName":"apple"},
-    {"foodId":"3", "foodName":"orange"}
+    {
+        "foodId":"2", 
+        "foodName":"apple"
+    },
+    {
+        "foodId":"3", 
+        "foodName":"orange"
+    }
 ]
 ```
 
@@ -161,9 +300,12 @@ e.g.
 
 ```javascript
 {
-    foodId: 3, foodName: "Apple", 
-        calories: "500", protein: "", 
-        vitamin : "", sugar: ""
+    foodId: 3,
+    foodName: "Apple",
+    calories: "500",
+    protein: "",
+    vitamin : "",
+    sugar: ""
 }
 ```
 
@@ -299,6 +441,21 @@ Note: all arrays in the response object have length 7
     week2: [23, ...]
 }
 ```
+## Web Socket and Multi-Threading   
+
+Use the basic way to initialize the web socket in any of the front-end pages, for ex.
+```javascript
+function ConnectToServer() {
+	socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss");
+	// Set up the four basic web-socket functions here
+}
+```
+**Note:** Currently it is not clear whether the session storage is shared between a regular servlet and a web socket servlet. If it is possible, there is no need to pass in an id parameter from the front end. Otherwise we'll have to pass an id parameter to make the socket aware of which user the current session belongs to. The web-socket utilize a path parameter to capture the id, so bascally it's calling a sub-routine in addition to the websocket server.
+*ex.*
+```javascript
+	socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss/" + id);
+```
+
 
 ## USDA Food Database
 

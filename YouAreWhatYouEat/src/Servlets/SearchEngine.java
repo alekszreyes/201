@@ -162,7 +162,7 @@ public class SearchEngine extends HttpServlet {
     	if(type != null && type.equals("saveMeal")) {
     		String dietName = request.getParameter("name");
     		String content = request.getParameter("content");
-    		content = "[01001, 01002, 01003, 01004, 01005]";
+    		//content = "[01001, 01002, 01003, 01004, 01005]";
     		System.out.println("name: " + dietName);
     		System.out.println("content: " + content);
     		String contentJson = "{ \"saving\": " + content + "}";

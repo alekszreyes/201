@@ -385,6 +385,7 @@ public class DatabaseDriver {
 		try {
 			ps = conn.prepareStatement(query);
 			ps.setString(1, userEmail);
+			rs = ps.executeQuery();
 			while(rs.next()) {
 				userID = rs.getInt("userID");
 			}

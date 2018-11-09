@@ -154,6 +154,7 @@ public class UserManager extends HttpServlet {
     		}
     	}
     	
+    	// making 
     	if(type != null && type.equals("Suggestions")) {
     		
     	}
@@ -163,6 +164,10 @@ public class UserManager extends HttpServlet {
     	}
     	
     	if(type != null && type.equals("followers")) {
+    		
+    	}
+    	
+    	if(type != null && type.equals("FollowRelation")) {
     		
     	}
     	

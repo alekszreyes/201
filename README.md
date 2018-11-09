@@ -354,6 +354,37 @@ e.g.
 
 ```
 
+### Get meals
+
+Gets all the user meals
+
+#### Request
+
+```javascript
+{
+    type: "getMeals"
+}
+```
+
+#### Response
+
+```javascript
+[
+    {
+        "mealId": 3
+        "name": "Veggie Meal",
+        "foodItems": "Apple, cookie, butter",
+        "privacy": "Private"
+    },
+    {
+		"mealId": 3
+        "name": "Burger Meal",
+        "foodItems": "Meat, bread, butter",
+        "privacy": "Public"
+    }
+]
+```
+
 ### Create a meal
 
 #### Request
@@ -481,6 +512,26 @@ function ConnectToServer() {
 ```javascript
 	socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss/" + id);
 ```
+
+## Notification
+Method name - showMessage(data) 
+
+Location - notify.js 
+
+Purpose - to display message boxes given a string
+
+Example
+```html
+<button type="button" onClick="showMessage('Testing')">Click Me!</button>
+```
+
+Requirements:
+Put these two script tags in the following locations
+1) located IN the head section of the html file
+	<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script> 
+
+2) located AFTER the body section of the html file
+	<script src="notify.js"></script>  
 
 
 ## USDA Food Database

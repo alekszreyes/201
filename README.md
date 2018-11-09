@@ -242,8 +242,7 @@ Otherwise let user1 follow user2.
 ```javascript
 {
     type: "FollowRelation",
-    userId1: 1,
-    userId2: 2
+    userId1: 1
 }
 ```
 

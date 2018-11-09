@@ -431,7 +431,7 @@ function displayMeal(mealId) {
         alert("sharing meal with id " + mealId);
 
         $.post("SearchEngine", {
-            type: "shareEmail",
+            type: "shareMeal",
             mealId: mealId
         })
         .done(function(d){

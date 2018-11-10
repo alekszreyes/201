@@ -523,26 +523,51 @@ function ConnectToServer() {
 	socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss/" + id);
 ```
 
-## Notification
-Method name - showMessage(data) 
+#### Front end
 
-Location - notify.js 
+##### Login
 
-Purpose - to display message boxes given a string
+Upon success, FE connects to the websocket and sends the message
 
-Example
-```html
-<button type="button" onClick="showMessage('Testing')">Click Me!</button>
+```javascript
+logged
 ```
 
-Requirements:
-Put these two script tags in the following locations
-1) located IN the head section of the html file
-​	<script type="text/javascript" src="//code.jquery.com/jquery-2.1.0.js"></script> 
+before redirecting the user to loggedIn.html
 
-2) located AFTER the body section of the html file
-​	<script src="notify.js"></script>  
+##### Main page
 
+User that has been logged in `loggedIn.html`. As soon as the page loads, the front end connects to the websocket. Any message from the server is displayed using *notification*.
+
+## Notification
+
+#### General
+
+**Method name** - `notify(data) `
+
+**Location** - notify.js 
+
+**Purpose** - to display message boxes given a string
+
+**Example**
+
+```html
+<button type="button" onClick="notify('Testing')">
+    Click Me!
+</button>
+```
+
+**Requirements:**
+
+```html
+<script src="notify.js"></script>
+```
+
+**Dependencies: ** jQuery 1.11.1, Bootstrap 3.3.7
+
+#### Websocket
+
+This file has been implemented so that when the websocket receives a message, it displays it using this method.
 
 ## USDA Food Database
 

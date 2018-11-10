@@ -190,18 +190,25 @@ Pull friends' meals that are public or have been suggested to this user.
 
 ```javascript
 {
-    type: "suggestedMeals"
+    type: "suggestedMeals",
+    numbers: 2
 }
 ```
 
 ##### Response
 
 ```javascript
-{
+[{
     mealId: 3,
+    mealName: "Veggie"
     foodItems: "Apple, Orange, Lettuce",
     createdBy: "Taylor Swift"
-}
+},{
+    mealId: 3,
+    mealName: "Veggie"
+    foodItems: "Apple, Orange, Lettuce",
+    createdBy: "Taylor Swift"
+}]
 ```
 
 #### Followers
@@ -242,7 +249,7 @@ Otherwise let user1 follow user2.
 ```javascript
 {
     type: "FollowRelation",
-    userId1: 1
+    userId: 1
 }
 ```
 
@@ -436,6 +443,29 @@ If no other user has a relationship to the same mealId, you can delete the relat
     type: "success"
 }
 ```
+
+### Try meal
+
+When a user decides to try a suggested meal
+
+#### Request
+
+```javascript
+{
+    type: "tryMeal",
+    mealId: 3
+}
+```
+
+#### Response
+
+```javascript
+{
+    type: "success"
+}
+```
+
+
 
 ### Toggle meal privacy
 

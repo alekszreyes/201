@@ -41,6 +41,7 @@ public class RegisteredUser extends User{
 		dbd.connect();
 		ArrayList<Map<String, String> > followers = dbd.getFollowers(id);
 		for (Map<String, String> f: followers) {
+			System.out.println("Following: " + f.get("userID"));
 			this.followingUser.add(Integer.parseInt(f.get("userID")));
 		}
 		sessionCnt = 0;

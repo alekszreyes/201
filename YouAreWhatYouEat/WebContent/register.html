@@ -150,9 +150,65 @@
 
 </body>
 
+<script src="notify.js"></script>
+<script src="ws.js"></script>
 <script>
 
-$("form").submit( ()=>{
+$("form").submit( (e)=>{
+
+    e.preventDefault();
+
+    function ajax(file, fileName) {
+        // send and form
+        $.ajax("UserManager", {
+            type: 'post',
+            data: {
+                type: "register",
+                firstName: $("#firstName").val(),
+                lastName: $("#lastName").val(),
+                email: $("#email").val(),
+                pictureName: fileName,
+                password: $("#password").val(),
+                picture: file
+            },
+            async: false
+        })
+        .fail(function(d) {
+
+        	console.log(d.status + ": " + d.statusText);
+        })
+        .done( function(d){
+        	console.log("attempting to parse " + d);
+            var json;
+            try {
+            	json = JSON.parse(d);
+                console.log("parse successful. Checking fields");
+                console.log("type: " + json.type);
+                console.log("message: " + json.message);
+
+                if(json.type == "success") {
+
+                    try {
+                        connectToWebsocket();
+                        socketSend("logged");
+                    }
+                    catch(e) {
+                        console.log("error communicating with websocket");
+                    }
+                    finally {
+                        window.location.href="loggedIn.html";
+                    }
+                }
+                else {
+                    console.log(json.message);
+                }
+            }
+            catch(e) {
+                console.log("Unable to parse answer from server.\n"
+                    +";p");
+            }
+        });
+    }
 
     if( document.getElementById("file").files[0] == undefined ) {
         ajax( "undefined", "undefined" );
@@ -168,46 +224,11 @@ $("form").submit( ()=>{
         ajax( event.target.result,
             document.getElementById('file').files[0].name
         );
-    }
+
     return false;
 
-    function ajax(file, fileName) {
-        // send and form
-        $.post("UserManager", {
-            type: "register",
-            firstName: $("#firstName").val(),
-            lastName: $("#lastName").val(),
-            email: $("#email").val(),
-            pictureName: fileName,
-            password: $("#password").val(),
-            picture: file
-        })
-        .fail(function(d) {
+}
 
-        	alert(d.status + ": " + d.statusText);
-        })
-        .done( function(d){
-        	alert("attempting to parse " + d);
-            var json;
-            try {
-            	json = JSON.parse(d);
-                alert("parse successful. Checking fields");
-                alert("type: " + json.type);
-                alert("message: " + json.message);
-
-                if(json.type == "success") {
-                    window.location.href="loggedIn.html";
-                }
-                else {
-                    alert(json.message);
-                }
-            }
-            catch(e) {
-                alert("Unable to parse answer from server.\n"
-                    +";p");
-            }
-        });
-    }
 });
 
 </script>

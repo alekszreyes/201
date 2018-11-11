@@ -2,6 +2,9 @@ package Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +25,16 @@ class Response{
 
 class LogoutResponse{
 	String type;
+}
+
+class SuggestMealResponse{
+	int mealId;
+	String foodItems;
+	String createdBy;
+}
+
+class FollowRelationResponse{
+	String message;
 }
 
 
@@ -70,8 +83,9 @@ public class UserManager extends HttpServlet {
     }
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String type = request.getParameter("type");
+    	System.out.println("current type: " + type);
     	PrintWriter out = response.getWriter();
-    	DatabaseDriver.connect(); // connect to the database
+    	databaseDriver.connect(); // connect to the database
     	HttpSession session = request.getSession();
     	// user registering
     	if(type != null && type.equals("register")) {
@@ -154,27 +168,86 @@ public class UserManager extends HttpServlet {
     		}
     	}
     	
-    	// making 
+    	// making suggestion of users to the current user
+    	//type = "Suggestions";
+    	//type = "suggestedMeals";
     	if(type != null && type.equals("Suggestions")) {
+    		System.out.println("in suggestions");
+    		//int numSuggest = Integer.parseInt(request.getParameter("number"));
+    		//int currUser = (int)session.getAttribute("userID");
     		
+    		// ***for testing
+    		int currUser = 1;
+    		int numSuggest = 2;
+    		// ***
+    		
+    		ArrayList<Map<String, String> > SuggestUser = databaseDriver.SuggestUser(numSuggest, currUser);
+    		try {
+    			String toPass = gson.toJson(SuggestUser);
+    			out.println(toPass);
+    		} catch(Exception e) {
+    			System.out.println("JSON: " + e.getMessage());
+    		}
     	}
     	
     	if(type != null && type.equals("suggestedMeals")) {
+    		System.out.println("in suggested meals");
     		
+    		// ***for DEBUG only
+    		int numToSuggest = 2;
+    		int currUser = 1;
+    		// ***
+    		
+    		//System.out.println("num from front end: " + request.getParameter("number"));
+    		//System.out.println("num: " + numToSuggest);
+    		
+    		//int currUser = (int)session.getAttribute("userID");
+    		//int numToSuggest = Integer.parseInt(request.getParameter("number"));
+
+    		ArrayList<Map<String, String>> result = databaseDriver.SuggestMeal(currUser, numToSuggest);
+
+    		try {
+    			String toPass = gson.toJson(result);
+    			out.println(toPass);
+    		} catch (Exception e) {
+    			System.out.println("JSON: " + e.getMessage());
+    		}
     	}
     	
+    	// return all followers of the current user
     	if(type != null && type.equals("followers")) {
-    		
+    		System.out.println("in followers");
+    		int currUser = (int) session.getAttribute("userID");
+    		//int currUser = 2;
+    		ArrayList<Map<String, String> > result = databaseDriver.getFollowers(currUser);
+    		try {
+    			String toPass = gson.toJson(result);
+    			out.println(toPass);
+    		} catch (Exception e) {
+    			System.out.println("sqle: " + e.getMessage());
+    		}
     	}
     	
     	if(type != null && type.equals("FollowRelation")) {
-    		
+    		int target = Integer.parseInt(request.getParameter("userId"));
+    		int currUser = (int) session.getAttribute("userID");
+    		FollowRelationResponse frr = new FollowRelationResponse();
+    		boolean tangle = databaseDriver.tangleFollowRelation(currUser, target);
+    		// they are originally friend
+    		if(tangle) {
+    			frr.message = "relation deleted";
+    		}
+    		else {
+    			frr.message = "relation added";
+    		}
+    		try {
+    			String toPass = gson.toJson(frr);
+    			out.println(toPass);
+    		} catch (Exception e) {
+    			System.out.println("JSON: " + e.getMessage());
+    		}
     	}
-    	
-    	
-    	
-    	
-    	DatabaseDriver.close(); // close the connection
+    	databaseDriver.close(); // close the connection
     }
 }
 

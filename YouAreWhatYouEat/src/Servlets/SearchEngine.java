@@ -62,7 +62,7 @@ class ShareResponse{
 @WebServlet("/SearchEngine")
 public class SearchEngine extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private DatabaseDriver databaseDriver = new DatabaseDriver();
+	// private DatabaseDriver databaseDriver = new DatabaseDriver();
 	private Gson gson = new Gson();
     /**
      * @see HttpServlet#HttpServlet()
@@ -74,11 +74,18 @@ public class SearchEngine extends HttpServlet {
 
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String type = request.getParameter("type");
-    	DatabaseDriver.connect();
+    	System.out.println("type: " + type);
+    	
+//    	DatabaseDriver databaseDriver = new DatabaseDriver();
+//    	DatabaseDriver.connect();
     	PrintWriter out= response.getWriter();
     	HttpSession session = request.getSession();
+    	
+    	//type = "getMeals";
     	// user searching for food
     	if(type != null && type.equals("search")) {
+        	DatabaseDriver databaseDriver = new DatabaseDriver();
+        	databaseDriver.connect();
     		// get the search key
     		String q = request.getParameter("q");
     		String searchKey[] = q.split("\\s+");
@@ -97,10 +104,13 @@ public class SearchEngine extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
+    		databaseDriver.close();
     	}
     	
     	// user getting food information
     	if(type != null && type.equals("getFood")) {
+        	DatabaseDriver databaseDriver = new DatabaseDriver();
+        	databaseDriver.connect();
     		// make the query
     		String foodID = request.getParameter("foodId");
     		Map<String, String> result = databaseDriver.getFoodInfo(foodID);
@@ -120,10 +130,13 @@ public class SearchEngine extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
+    		databaseDriver.close();
     	}
     	
     	// user comparing two food
     	if(type != null && type.equals("compare")) {
+        	DatabaseDriver databaseDriver = new DatabaseDriver();
+        	databaseDriver.connect();
     		String foodID1 = request.getParameter("food1");
     		String foodID2 = request.getParameter("food2");
     		InfoResponse ir1 = new InfoResponse();
@@ -157,9 +170,13 @@ public class SearchEngine extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
+    		databaseDriver.close();
     	}
     	// user saving meal
     	if(type != null && type.equals("saveMeal")) {
+        	DatabaseDriver databaseDriver = new DatabaseDriver();
+        	databaseDriver.connect();
+        	
     		String dietName = request.getParameter("name");
     		String content = request.getParameter("content");
     		//content = "[01001, 01002, 01003, 01004, 01005]";
@@ -185,7 +202,7 @@ public class SearchEngine extends HttpServlet {
     			} catch (Exception e) {
     				System.out.println("JSON: " + e.getMessage());
     			}
-    			DatabaseDriver.close();
+    			databaseDriver.close();
     			return;
     		}
     		
@@ -213,12 +230,15 @@ public class SearchEngine extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
-    		
+    		databaseDriver.close();
     	}
     	
     	// user deleting meal
     	//type = "deleteMeal";
     	if(type != null && type.equals("deleteMeal")) {
+        	DatabaseDriver databaseDriver = new DatabaseDriver();
+        	databaseDriver.connect();
+    		
     		String mealID = request.getParameter("mealId");
     		int userID = (int)session.getAttribute("userID");
 //    		mealID = "1";
@@ -236,13 +256,19 @@ public class SearchEngine extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
+    		databaseDriver.close();
     	}
     	
     	//type = "shareMeal";
     	// user is sharing a specified meal with someone else --> make the meal public
-    	if(type != null && type.equals("shareMeal")) {
+    	if(type != null && type.equals("toggleMealPrivacy")) {
+        	DatabaseDriver databaseDriver = new DatabaseDriver();
+        	databaseDriver.connect();
+    		
     		String dietID = request.getParameter("mealId");
     		int userID = (int)session.getAttribute("userID");
+    		System.out.println("in shareMeal");
+    		System.out.println(userID + " " + dietID);
 //    		dietID = "3";
 //    		userID = 2;
     		ShareResponse sr = new ShareResponse();
@@ -258,8 +284,27 @@ public class SearchEngine extends HttpServlet {
 			} catch (Exception e) {
 				System.out.println("JSON: " + e.getMessage());
 			}
+    		databaseDriver.close();
     	}
-    	DatabaseDriver.close();
+    	
+    	if(type != null && type.equals("getMeals")) {
+        	DatabaseDriver databaseDriver = new DatabaseDriver();
+        	databaseDriver.connect();
+    		
+    		//int currUser = (int) session.getAttribute("userID");
+    		
+    		int currUser = 3;
+    		ArrayList<Map<String, String>> result = databaseDriver.getMeals(currUser);
+    		
+    		try {
+    			String toPass = gson.toJson(result);
+    			out.println(toPass);
+    			System.out.println(toPass);
+    		} catch (Exception e) {
+    			System.out.println("JSON: " + e.getMessage());
+    		}
+    		databaseDriver.close();
+    	}
     }
 }
 

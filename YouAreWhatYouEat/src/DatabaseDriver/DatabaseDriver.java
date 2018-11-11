@@ -9,10 +9,10 @@ import java.util.Map;
 import Servlets.SearchEngine;
 import javafx.util.Pair;
 public class DatabaseDriver {
-	private static Connection conn = null;
-	private static ResultSet rs = null;
-	private static PreparedStatement ps = null;
-	private static Statement s = null;
+	private Connection conn = null;
+	private ResultSet rs = null;
+	private PreparedStatement ps = null;
+	private Statement s = null;
 	
 	//***********************************************************************************************************************************************
 	// Begin of universal helper functions
@@ -33,7 +33,7 @@ public class DatabaseDriver {
 	//***********************************************************************************************************************************************
 	// Begin of JDBC code
 	// method to connect to the database
-	public static void connect(){
+	public void connect(){
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nutrition?user=root&password=lunjohnzhang&useSSL=false");
@@ -46,22 +46,23 @@ public class DatabaseDriver {
 	}
 	
 	// method to close the connection
-	public static void close(){
-		try{
-			if (rs!=null){
-				rs.close();
-				rs = null;
-			}
-			if(conn != null){
-				conn.close();
-				conn = null;
-			}
-			if(ps != null ){
-				ps = null;
-			}
-		}catch(SQLException sqle){
-			System.out.println("connection close error" + sqle.getMessage());
-		}
+	public void close(){
+//		try{
+//			if (rs!=null){
+//				rs.close();
+//				rs = null;
+//			}
+//			if(conn != null){
+//				conn.close();
+//				conn = null;
+//			}
+//			if(ps != null ){
+//				ps = null;
+//			}
+//		}catch(SQLException sqle){
+//			System.out.println("connection close error" + sqle.getMessage());
+//		}
+		System.out.println("Connection closed!");
 	}
 	
 	// End of JDBC code
@@ -100,10 +101,32 @@ public class DatabaseDriver {
 			ps = conn.prepareStatement(query);
 			ps.setString(1, toQuery);
 			rs = ps.executeQuery();
+//			rs.next();
+//			System.out.println("in querynutrition: " + rs.getString("FOOD_DES.Long_Desc"));
 		} catch (SQLException sqle){
 			System.out.println("sqle: " + sqle.getMessage());
 		}
+		
 		return rs;
+	}
+	
+	public String getFoodName(String foodID) {
+		
+		rs = QueryNutritionID(foodID);
+		String result = "";
+		try {
+			//rs.next();
+			//System.out.println("in querynutrition: " + rs.getString("FOOD_DES.Long_Desc"));
+			while(true) {
+				rs.next();
+				if (rs.isAfterLast()) break;
+				result = rs.getString("FOOD_DES.Long_Desc");
+			}
+		} catch (SQLException e) {
+			System.out.println("sqle: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	// method to search for food according to the key given
@@ -112,7 +135,7 @@ public class DatabaseDriver {
 		// search each key one by one
 		for(int i=0; i<searchKey.length; i++) {
 			try {
-				rs = this.QueryNutrition(searchKey[i]);
+				ResultSet rs = this.QueryNutrition(searchKey[i]);
 				int count = 0;
 				while(rs.next() && count < 20) {
 					String ID = rs.getString("FOOD_DES.NDB_No");
@@ -169,6 +192,67 @@ public class DatabaseDriver {
 		return result;
 	}
 	
+	// method to turn all of the meals of a specific user
+	public ArrayList<Map<String, String>> getMeals(int currUser){
+		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
+		String query = "SELECT * FROM DietUser \n"
+				+ "WHERE DietUser.userID = ?\n";
+		try {
+			// get all dietID of the current user 
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			rs = ps.executeQuery();
+			ArrayList<Pair<Integer, Integer>> allDiet = new ArrayList<Pair<Integer, Integer>>();
+			while(rs.next()) {
+				Pair<Integer, Integer> toAdd = new Pair<Integer, Integer>(rs.getInt("dietID"), rs.getInt("access"));
+				allDiet.add(toAdd);
+			}
+			//rs.close();
+			// for each diet, get all of the relevant information
+			query = "SELECT * FROM DietFood \n"
+					+ "WHERE dietID = ?";
+			PreparedStatement ps = conn.prepareStatement(query);
+			for(int i=0; i<allDiet.size(); i++) {
+				//System.out.println("currentDietID: " + allDiet.get(i).getKey());
+				ps.setInt(1, allDiet.get(i).getKey());
+				ResultSet rs = ps.executeQuery();
+				
+				Map<String, String> newMeal = new HashMap();
+				
+				// set access of the new meal
+				if(allDiet.get(i).getValue() == 1) {
+					newMeal.put("privacy", "Public");
+				}
+				else {
+					newMeal.put("privacy", "Private");
+				}
+				
+				// use an ArrayList to remember all of the food of the current meal
+				ArrayList<String> allFood = new ArrayList<String>();
+				while(rs.next()) {
+					newMeal.put("mealId", Integer.toString(rs.getInt("dietID")));
+					newMeal.put("name", rs.getString("dietName"));
+					//System.out.println("name: " + rs.getString("dietName")); 
+					String currFoodID = rs.getString("foodID");
+					allFood.add(this.getFoodName(currFoodID));
+				}
+				String allFoodMsg = "";
+				for(int j=0; j<allFood.size(); j++) {
+					allFoodMsg += allFood.get(j);
+					if(j != allFood.size() - 1) {
+						allFoodMsg += ", ";
+					}
+				}
+				newMeal.put("foodItems", allFoodMsg);
+				result.add(newMeal);
+				rs.close();
+			}
+		} catch (SQLException e) {
+			System.out.println("sqle in getMeals: " + e.getMessage());
+		}
+		return result;
+	}
+	
 	// End of nutrition database query code
 	//***********************************************************************************************************************************************
 	
@@ -198,7 +282,7 @@ public class DatabaseDriver {
 				ps = conn.prepareStatement(query);
 				ps.setInt(1, dietID);
 				ps.setString(2, dietName);
-				System.out.println("to insert food: " + food.get(i));
+				//System.out.println("to insert food: " + food.get(i));
 				ps.setString(3, food.get(i));
 				ps.executeUpdate();
 			}
@@ -231,7 +315,7 @@ public class DatabaseDriver {
 			while(rs.next()) {
 				numDietInDietUser++;
 			}
-			System.out.println("num: " + numDietInDietUser);
+			//System.out.println("num: " + numDietInDietUser);
 			if(numDietInDietUser == 0) {
 				return false;
 			}
@@ -397,34 +481,220 @@ public class DatabaseDriver {
 	}
 	
 	public ArrayList<Map<String, String> > SuggestUser(int num, int currUser){
+//		System.out.println("user currUser: " + currUser);
+//		System.out.println("user num: " + num);
+		
+		
 		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		
 		// get all of the users that are not the current user
 		String query = "SELECT * FROM Users, DietFood, DietUser \n" + 
 				"WHERE DietUser.userID = Users.userID \n" + 
 				"AND DietFood.dietID = DietUser.dietID\n" +
-				"AND Users.userID != ?";
+				"AND Users.userID != ?\n" +
+				"AND Users.userID = ?";
 		try {
 			ps = conn.prepareStatement(query);
-			ps.setInt(1, currUser);
-			rs = ps.executeQuery();
-			int count = 0;
-			while(rs.next()) {
-				count++;
+			ps.setInt(1, currUser); // exclude the current user
+			// loop through the number of users to return
+			for(int i=1; i<=num; i++) {
+				if(i == currUser) {
+					num++;
+					continue;
+				}
+				//System.out.println("i: " + i);
+				ps.setInt(2, i);
+				rs = ps.executeQuery();
+				ArrayList<String> currMeal = new ArrayList<String>();
+				int currMealID = 0;
+				ArrayList<String> currFood = new ArrayList<String>();
+				String currFoodID = "";
 				Map<String, String> addUser = new HashMap();
-				addUser.put("userId", Integer.toString(rs.getInt("userID")));
-				addUser.put("picture", rs.getString("profilePic"));
-				addUser.put("name", rs.getString("userName"));
+				while(rs.next()) {
+					addUser.put("userId", Integer.toString(rs.getInt("userID")));
+					addUser.put("picture", rs.getString("profilePic"));
+					addUser.put("name", rs.getString("userName"));
+					
+					// for meal and food, need to make sure they do not overlap
+					// NOTE: diet and meal are equivalent
+					if(currMealID != rs.getInt("dietID") && rs.getInt("access") == 1 && currMeal.size() != 2) {
+						currMealID = rs.getInt("dietID");
+						currMeal.add(rs.getString("dietName"));
+					}
+					
+					if(!currFoodID.equals(rs.getString("foodID")) && rs.getInt("access") == 1 && currFood.size() != 2) {
+						currFoodID = rs.getString("foodID");
+						currFood.add(this.getFoodName(currFoodID));
+					}
+				}
+				String mealMsg = "";
+				String foodMsg = "";
+				for(int j=0; j<currMeal.size(); j++) {
+					mealMsg += currMeal.get(j);
+					if(j != currMeal.size() - 1) {
+						mealMsg += "; ";
+					}
+				}
+				for(int j=0; j<currFood.size(); j++) {
+					foodMsg += currFood.get(j);
+					if(j != currMeal.size() - 1) {
+						foodMsg += "; ";
+					}
+				}
+				if(!mealMsg.isEmpty() && !foodMsg.isEmpty()) {
+					addUser.put("meals", mealMsg);
+					addUser.put("likes", foodMsg);
+				}
+				// *** DEBUG
+				System.out.println("userID: " + addUser.get("userID"));
+				System.out.println("picture: " + addUser.get("picture"));
+				System.out.println("name: " + addUser.get("name"));
+				System.out.println("meals: " + addUser.get("meals"));
+				System.out.println("likes: " + addUser.get("likes") + "\n");
+				// ***
 				
+				if(!addUser.isEmpty()) {
+					result.add(addUser);
+				}
 				
 			}
 		} catch (SQLException e) {
-			System.out.println("sqle: " + e.getMessage());
+			System.out.println("sqle User Suggestion: " + e.getMessage());
 		}
+		return result;
+	}
+	
+	
+	// method to return suggested meal
+	public ArrayList<Map<String, String>> SuggestMeal(int currUser, int num){
+		//System.out.println("meal currUser: " + currUser);
+		//System.out.println("meal num: " + num);
 		
 		
-		
-		
+		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
+		String query = "SELECT * FROM Users, DietFood, DietUser \n" + 
+				"WHERE DietUser.userID = Users.userID \n" + 
+				"AND DietFood.dietID = DietUser.dietID\n" +
+				"AND Users.userID != ?\n" + 
+				"AND Users.userID = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			for(int j=1; j<=num; j++) {
+				if(j == currUser) {
+					num++;
+					continue;
+				}
+				Map<String, String> newMealToSuggest = new HashMap();
+				ps.setInt(2, j);
+				ResultSet rs = ps.executeQuery();
+				// an ArrayList to store the food item list
+				ArrayList<String> foodItemList = new ArrayList<String>();
+					
+				String currFoodID = "";
+				
+				while(true) {
+					rs.next();
+					if(rs.isAfterLast()) break;
+					//System.out.println("in suggest meal: " + rs.getString("dietName"));
+					newMealToSuggest.put("dietName", rs.getString("dietName"));
+					newMealToSuggest.put("mealId", Integer.toString(rs.getInt("dietID")));
+					newMealToSuggest.put("createdBy", rs.getString("userName"));
+					if(!currFoodID.equals(rs.getString("foodID"))) {
+						currFoodID = rs.getString("foodID");
+						foodItemList.add(this.getFoodName(currFoodID));
+					}
+				}
+				String foodItem = "";
+				for(int i=0; i<foodItemList.size(); i++) {
+					foodItem += foodItemList.get(i);
+					if(i != foodItemList.size()-1) {
+						foodItem += "; ";
+					}
+				}
+				if(!newMealToSuggest.isEmpty()) {
+					newMealToSuggest.put("foodItems", foodItem);
+					result.add(newMealToSuggest);
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("sqle MealSuggestion: " + e.getMessage());
+		}
+		return result;
+	}
+	
+	public ArrayList<Map<String, String> > getFollowers(int currUser){
+		ArrayList<Map<String, String> > result = new ArrayList<Map<String, String> >();
+		try {
+			// get all of the users that the current user is following
+			String query = "select * from FollowRelation where target = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			rs = ps.executeQuery();
+			ArrayList<Integer> followers = new ArrayList<Integer>();
+			while(rs.next()) {
+				followers.add(rs.getInt("from_"));
+			}
+			
+			// get the information of the followers
+			query = "SELECT * FROM Users WHERE userID = ?";
+			ps = conn.prepareStatement(query);
+			for(int i=0; i<followers.size(); i++) {
+				Map<String, String> newFollower = new HashMap();
+				ps.setInt(1, followers.get(i));
+				ps.executeQuery();
+				while(rs.next()) {
+					newFollower.put("userId", Integer.toString(rs.getInt("userID")));
+					newFollower.put("name", rs.getString("userName"));
+					newFollower.put("picture", rs.getString("profilePic"));
+				}
+				if(!newFollower.isEmpty()) {
+					result.add(newFollower);
+//					System.out.println("userID: " + newFollower.get("userId"));
+//					System.out.println("name: " + newFollower.get("name"));
+//					System.out.println("picture: " + newFollower.get("picture"));
+				}
+			}
+		} catch (SQLException sqle) {
+			System.out.println("sqle: " + sqle.getMessage());
+		}		
+		return result;
+	}
+	
+	public boolean tangleFollowRelation(int currUser, int target) {
+		boolean result = false; // false means that they are originally not friends, but will be.
+		String query = "SELECT * FROM FollowRelation\n"
+					+ "WHERE from_ = ?\n"
+					+ "AND target = ?";
+		try {
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			ps.setInt(2, target);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				result = true;
+			}
+			
+			// update the relation in terms of the information given
+			// they are originally friends, delete the relation
+			if(result) {
+				query = "DELETE FROM FollowRelation WHERE from_ = ? AND target = ?";
+				ps = conn.prepareStatement(query);
+				ps.setInt(1, currUser);
+				ps.setInt(2, target);
+				ps.executeUpdate();
+			}
+			// they are originally not friends, add the relation
+			else {
+				query = "INSERT INTO FollowRelation(from_, target) VALUES(?, ?)";
+				ps = conn.prepareStatement(query);
+				ps.setInt(1, currUser);
+				ps.setInt(2, target);
+				ps.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println("sqle in tangleFollowRelation: " + e.getMessage());
+		}
 		return result;
 	}
 	

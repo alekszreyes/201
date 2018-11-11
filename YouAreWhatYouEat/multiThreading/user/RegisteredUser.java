@@ -1,8 +1,12 @@
 package user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import DatabaseDriver.DatabaseDriver;
 import diet.Diet;
 
 public class RegisteredUser extends User{
@@ -32,7 +36,13 @@ public class RegisteredUser extends User{
 		this.id = id;
 		this.username = "User"+id;
 		this.email = email;
-		
+		followingUser = new HashSet<Integer>();
+		DatabaseDriver dbd = new DatabaseDriver();
+		dbd.connect();
+		ArrayList<Map<String, String> > followers = dbd.getFollowers(id);
+		for (Map<String, String> f: followers) {
+			this.followingUser.add(Integer.parseInt(f.get("userID")));
+		}
 		sessionCnt = 0;
 	}
 	

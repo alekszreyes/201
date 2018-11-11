@@ -32,3 +32,18 @@ function socketSend(str) {
     socket.send(str);
 }
 
+/**
+ * extra function to specifically handle the situation when logging in
+ */
+function loginConnect() {
+socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss");
+    
+    socket.onopen = function(event){
+    	console.log("Connected to websocket");
+    	socket.send("login");
+    }
+    socket.onclose = function(event){
+    	console.log("Disconnected");
+    }
+}
+

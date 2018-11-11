@@ -39,7 +39,7 @@ public class UserList {
 	// Debug Helpers
 	public void printUserMap() {
 		for (Map.Entry<Integer, User> su: userList.entrySet()) {
-			System.out.println("id=" + su.getKey() + " Name=" + su.getValue().getUsername() + " SessionCnt=" + ((RegisteredUser) su.getValue()).getSessionCnt());
+			System.out.println("id=" + su.getKey() + " Name=" + su.getValue().getEmail() + " SessionCnt=" + ((RegisteredUser) su.getValue()).getSessionCnt());
 		}
 	}
 	

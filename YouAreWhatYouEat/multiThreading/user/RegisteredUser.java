@@ -25,13 +25,13 @@ public class RegisteredUser extends User{
 	} 
 	
 	// Retrieve the existing user from the data base
-	public RegisteredUser(int id) {
+	public RegisteredUser(int id, String email) {
 		// TODO: get all information
 		// Currently filled with test values
 		userCnt++;
 		this.id = id;
 		this.username = "User"+id;
-		this.email = id + "@test.com";
+		this.email = email;
 		
 		sessionCnt = 0;
 	}
@@ -72,6 +72,7 @@ public class RegisteredUser extends User{
 	
 	public int getSessionCnt() {
 		return sessionCnt;
+		
 	}
  
 }

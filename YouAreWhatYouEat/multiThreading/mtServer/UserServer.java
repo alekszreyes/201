@@ -27,32 +27,33 @@ public class UserServer {
 	public UserServer() {
 		// TODO Auto-generated constructor stub
 	}
-	
+	// TODO : Implement a function that allows the send a message to the user that calls from another servlet
 	@OnOpen
 	public void open(Session session, EndpointConfig config) {
 		// TODO: retrieve the actual user from the user database and got it captured by this method
 		// currently substituted with an imaginary user
 		httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
 		this.id = (int) httpSession.getAttribute("userID");
+		String email = (String) httpSession.getAttribute("userEmail");
 		System.out.println("Connection from user id " + id);
 		if (users.isActive(id)) {
 			sessions.put(session, id);
 			((RegisteredUser) users.getUser(id)).addSession();
 		} else {
-			users.addUser(new RegisteredUser(id));
+			users.addUser(new RegisteredUser(id, email));
 			sessions.put(session, id);
 			((RegisteredUser) users.getUser(id)).addSession();
 		}
 		
-		for (Map.Entry<Session, Integer> su: sessions.entrySet()) {
-			if (id != su.getValue()) {
-				try {
-					su.getKey().getBasicRemote().sendText(users.getUser(id).getUsername());
-				} catch (IOException ioe) {
-					System.out.println("ioe: " + ioe.getMessage());
-				}
-			}
-		}
+//		for (Map.Entry<Session, Integer> su: sessions.entrySet()) {
+//			if (id != su.getValue()) {
+//				try {
+//					su.getKey().getBasicRemote().sendText(users.getUser(id).getUsername());
+//				} catch (IOException ioe) {
+//					System.out.println("ioe: " + ioe.getMessage());
+//				}
+//			}
+//		}
 		
 		printSessionMap();
 		users.printUserMap();

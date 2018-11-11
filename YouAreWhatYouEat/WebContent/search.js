@@ -1,7 +1,13 @@
 var s = "";
 $(function() {
+<<<<<<< HEAD
 	//connectToServer();
 	
+=======
+
+    connectToWebsocket();
+    
+>>>>>>> master
     //$("#cmpBtn").hide();
     listener();
     query();
@@ -25,7 +31,8 @@ $(function() {
                 populateList(json);
 
                 // click first
-                //$(".foodItem").first().click();
+                $(".foodItem").first().click();
+                $(".foodItem").prop("checked", true);
             }
             catch(e) {
                 console.log("error parsing");
@@ -81,11 +88,17 @@ function listener() {
                 console.log("foodId: " + json.foodId);
                 console.log("foodName: " + json.foodName);
                 console.log("calories: " + json.calories);
+                console.log("protein: " + json.protein);
+                console.log("vitamin: " + json.vitamin);
+                console.log("sugar: " + json.sugar);
 
                 // display info
                 const br = '<br>';
-                $("#info").html('<b>' + json.foodName + '</b>' + br 
-                    + "calories: " + json.calories
+                $("#info").html('<h4>' + json.foodName + '</h4>'
+                    + "<b>calories:</b> " + json.calories + br
+                    + "<b>protein:</b> " + json.protein + br
+                    + "<b>vitamin:</b>" + json.vitamin + br
+                    + "<b>sugar:</b> " + json.sugar + br
                 );
             }
             catch(e) {
@@ -161,18 +174,4 @@ $("#cmpBtn").click( function(){
     }
 });
 
-var socket;
 
-function connectToServer() {
-    socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss");
-
-    socket.onopen = function(event){
-        console.log("Connected to websocket");
-    }
-    socket.onmessage = function(event){
-        alert(event.data);
-    }
-    socket.onclose = function(event){
-        console.log("Disconnected");
-    }
-}

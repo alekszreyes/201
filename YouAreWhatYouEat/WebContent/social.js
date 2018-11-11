@@ -1,9 +1,13 @@
 var s = "";
 $(function() {
     // get suggestions
-    $.post("UserManager", {
-        type: "Suggestions",
-        number: 2
+    $.ajax("UserManager", {
+        type: 'POST',
+        data: {
+            type: "Suggestions",
+            number: 2
+        },
+        async: false
     })
     .done(function(d) {
         try {
@@ -29,9 +33,13 @@ $(function() {
 
         $(".follow").click(function(){
             let userId = $(this).attr("k");
-            $.post("UserManager", {
-                type: "FollowRelation",
-                userId: userId
+            $.ajax("UserManager", {
+                type: 'POST', 
+                data : {
+                    type: "FollowRelation",
+                    userId: userId
+                },
+                async: false
             })
             .done(function() {
                 $("#r" + userId).remove();
@@ -40,9 +48,13 @@ $(function() {
     });
 
     // get meals
-    $.post("UserManager", {
-        type: "suggestedMeals",
-        number: 2
+    $.ajax("UserManager", {
+        type: 'POST',
+        data: {
+            type: "suggestedMeals",
+            number: 2
+        },
+        async: false
     })
     .done(function(d) {
         try {
@@ -70,9 +82,13 @@ $(function() {
 
             let mealId = $(this).attr("mealId");
             
-            $.post("UserManager", {
-                type: "tryMeal",
-                mealId: mealId
+            $.ajax("UserManager", {
+                type: 'POST',
+                data: {
+                    type: "tryMeal",
+                    mealId: mealId
+                },
+                async: false
             })
             .done(function() {
                 $("#try" + mealId).remove();
@@ -100,4 +116,3 @@ $(function() {
     });
     **/
 });
-

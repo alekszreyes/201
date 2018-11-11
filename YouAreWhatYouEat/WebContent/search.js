@@ -1,13 +1,8 @@
 var s = "";
 $(function() {
-<<<<<<< HEAD
-	//connectToServer();
-	
-=======
 
     connectToWebsocket();
-    
->>>>>>> master
+
     //$("#cmpBtn").hide();
     listener();
     query();

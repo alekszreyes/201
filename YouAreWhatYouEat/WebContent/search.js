@@ -10,9 +10,13 @@ $(function() {
     $("#searchBtn").click(function(){ query(); });
 
     function query() {
-        $.post("SearchEngine", {
-            type: "search",
-            q: $("#search").val()
+        $.ajax("SearchEngine", {
+            type: 'POST',
+            data: {
+                type: "search",
+                q: $("#search").val()
+            },
+            async: false
         })
         .done(function(d){
             console.log("trying to parse response " + d);
@@ -69,9 +73,13 @@ function listener() {
         console.log("id is " + foodId);
 
         // request info from back end
-        $.post("SearchEngine", {
-            type: "getFood",
-            foodId: foodId
+        $.ajax("SearchEngine", {
+            type: 'POST',
+            data: {
+                type: "getFood",
+                foodId: foodId
+            },
+            async: false
         })
         .done(function(d){
             console.log("trying to parse response");
@@ -111,13 +119,17 @@ function listener() {
             compare = false;
             
             // back end
-            $.post("SearchEngine", {
-                type: "compare",
-                food1: comp1,
-                food2: foodId
+            $.ajax("SearchEngine", {
+                type: 'POST',
+                data: {
+                    type: "compare",
+                    food1: comp1,
+                    food2: foodId
+                },
+                async: false
             })
             .done(function(d){
-                alert("response is " + d);
+                console.log("response is " + d);
 
                 try {
                     var json = JSON.parse(d);
@@ -168,5 +180,3 @@ $("#cmpBtn").click( function(){
         compare = true;
     }
 });
-
-

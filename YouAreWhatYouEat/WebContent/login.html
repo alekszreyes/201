@@ -98,44 +98,77 @@ Log in</a></li>
     </div>
 
 </body>
+<script src="ws.js"></script>
 <script>
     $(".nav li").removeClass("active");
     $("#loginNav").addClass("active");
-    $("form").submit( function(){
-        $.post("UserManager", {
-            type: "login",
-            email: $("#email").val(),
-            password: $("#password").val()
+    $("form").submit(function(e){ e.preventDefault();return m();});
+
+    var s = "";
+
+    function m(){
+        $.ajax("UserManager", {
+            type: 'post',
+            data: {
+                type: "login",
+                email: $("#email").val(),
+                password: $("#password").val()
+            },
+            async: false
         })
         .fail(function(d) {
-            alert(d.status + ": " + d.statusText);
+            console.log(d.status + ": " + d.statusText);
         })
         .done(function(d){
-            alert("attempting to parse " + d);
+            console.log("attempting to parse " + d);
             var json;
             try {
                 json = JSON.parse(d);
-                alert("parse successful. Checking fields");
-                alert("type: " + json.type);
-                alert("message: " + json.message);
+                console.log("parse successful. Checking fields");
+                console.log("type: " + json.type);
+                console.log("message: " + json.message);
+                s=json;
+            }
+            catch(e) {
+                console.log("Unable to parse answer from server.\n"
+                    +";p");
+            }
 
+<<<<<<< HEAD
                 if(json.type == "success") {
                 	alert("here is where the connection should've been established");
                 	loginConnect();
                 	window.location.href="loggedIn.html";
+=======
+            if(s.type == "success") {
+
+                try {
+                    connectToWebsocket();
+                    socketSend("logged");
+                }catch(e) {
+                    console.log("error connecting to websocket");
+>>>>>>> master
                 }
-                else {
-                    alert(json.message);
+                finally{
+                    window.location.href="loggedIn.html";
                 }
             }
+<<<<<<< HEAD
             catch(e) {
             	console.log(e);
                 alert("Unable to parse answer from server.\n"
                     +";p");
+=======
+            else {
+                console.log(json.message);
+>>>>>>> master
             }
         });
         return false;
-    });
+    }
+
 </script>
 
 </html>
+
+

@@ -89,14 +89,9 @@ Log out</a></li>
             You have saved a total of 19 calories
             today.
         <p>
-        <h3>Recommendations</h3>
-        <p>
-            If you drink smoothies instead of energy drinks, you could save 
-            2000 daily calories more, which would save you 14,000 per week.
-        </p>
     </div>
 </div>
-<div class="row spaceTop">
+<div class="row spaceTop" style="display: none">
     <div class="col-sm-9">
         <h3>Break Down</h3>
         <table class="table table-hover spaceTop">
@@ -124,46 +119,6 @@ Log out</a></li>
     </div>
 </div>
 
-<script>
-//line
-var ctxL = document.getElementById("lineChart").getContext('2d');
-var myLineChart = new Chart(ctxL, {
-  type: 'line',
-  data: {
-    labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    datasets: [{
-        label: "Calories consumed",
-        data: [65, 59, 80, 81, 56, 55, 40],
-        backgroundColor: [
-          'rgba(153, 27, 30, .2)',
-        ],
-        borderColor: [
-          'rgba(255, 199, 44, .7)',
-        ],
-        borderWidth: 2
-      },
-      {
-        label: "Calories saved",
-        data: [28, 48, 40, 19, 86, 27, 90],
-        backgroundColor: [
-          'rgba(255, 199, 44, .2)',
-        ],
-        borderColor: [
-          'rgba(153,27,30, .7)',
-        ],
-        borderWidth: 2
-      }
-    ]
-  },
-  options: {
-    responsive: true
-  }
-});
-</script>
-<script>
-    $(".nav li").removeClass("active");
-    $("#userNav").addClass("active");
-</script>
 
 </div>
 </div>
@@ -172,5 +127,66 @@ var myLineChart = new Chart(ctxL, {
         Created by WeNeedAName Inc. All rights reserved
     </div>
 
+<script>
+
+$.ajax("SummaryEngine", { 
+        type: 'post',
+        data: {
+            type: "getData" 
+        },
+        async: false
+    })
+    .done(function(d){
+        try {
+            var json = JSON.parse(d);
+
+            //line
+            var ctxL = document.getElementById("lineChart").getContext('2d');
+            var myLineChart = new Chart(ctxL, {
+              type: 'line',
+              data: {
+                labels: json.axis,
+                datasets: [{
+                    label: "Calories consumed",
+                    data: json.week1,
+                    backgroundColor: [
+                      'rgba(153, 27, 30, .2)',
+                    ],
+                    borderColor: [
+                      'rgba(255, 199, 44, .7)',
+                    ],
+                    borderWidth: 2
+                  },
+                  {
+                    label: "Calories saved",
+                    data: json.week2,
+                    backgroundColor: [
+                      'rgba(255, 199, 44, .2)',
+                    ],
+                    borderColor: [
+                      'rgba(153,27,30, .7)',
+                    ],
+                    borderWidth: 2
+                  }
+                ]
+              },
+              options: {
+                responsive: true
+              }
+            });
+        }catch(e) {
+            alert("Error parsing");
+        }
+    });
+
+    function notify(str) { alert(str); }
+</script>
+<script>
+    $(".nav li").removeClass("active");
+    $("#userNav").addClass("active");
+</script>
+<script src="ws.js"></script>
+
 </body>
 </html>
+

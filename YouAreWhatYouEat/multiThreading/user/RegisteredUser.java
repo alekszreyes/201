@@ -33,12 +33,13 @@ public class RegisteredUser extends User{
 		// TODO: get all information
 		// Currently filled with test values
 		userCnt++;
-		this.id = id;
-		this.username = "User"+id;
-		this.email = email;
-		followingUser = new HashSet<Integer>();
 		DatabaseDriver dbd = new DatabaseDriver();
 		dbd.connect();
+		this.id = id;
+		this.username = dbd.getUserName(id);
+		this.email = email;
+		followingUser = new HashSet<Integer>();
+		
 		ArrayList<Map<String, String> > followers = dbd.getFollowers(id);
 		for (Map<String, String> f: followers) {
 			System.out.println("Following: " + f.get("userID"));

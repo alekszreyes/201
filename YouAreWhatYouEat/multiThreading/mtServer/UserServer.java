@@ -65,8 +65,6 @@ public class UserServer {
 			message = users.getUser(id).getUsername() + " has just logged in!";
 		}
 		
-		
-		
 		System.out.println("Received message from user " + id + ": " + message);
 		for (Map.Entry<Session, Integer> su: sessions.entrySet()) {
 //			if (((RegisteredUser) users.getUser(su.getValue())).isFollowing(id)) {

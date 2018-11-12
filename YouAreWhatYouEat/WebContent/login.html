@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="ws.js"></script>
 
 <!-- Material Design Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/css/mdb.min.css">
@@ -134,34 +133,20 @@ Log in</a></li>
                     +";p");
             }
 
-<<<<<<< HEAD
-                if(json.type == "success") {
-                	alert("here is where the connection should've been established");
-                	loginConnect();
-                	window.location.href="loggedIn.html";
-=======
             if(s.type == "success") {
 
                 try {
-                    connectToWebsocket();
-                    socketSend("logged");
+                    loginConnect();
+                    //socketSend("logged");
                 }catch(e) {
                     console.log("error connecting to websocket");
->>>>>>> master
                 }
                 finally{
                     window.location.href="loggedIn.html";
                 }
             }
-<<<<<<< HEAD
-            catch(e) {
-            	console.log(e);
-                alert("Unable to parse answer from server.\n"
-                    +";p");
-=======
             else {
                 console.log(json.message);
->>>>>>> master
             }
         });
         return false;

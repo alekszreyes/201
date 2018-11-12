@@ -118,7 +118,7 @@ public class DatabaseDriver {
 			//rs.next();
 			//System.out.println("in querynutrition: " + rs.getString("FOOD_DES.Long_Desc"));
 			while(true) {
-				rs.next();
+				if(!rs.next()) break;
 				if (rs.isAfterLast()) break;
 				result = rs.getString("FOOD_DES.Long_Desc");
 			}
@@ -567,58 +567,68 @@ public class DatabaseDriver {
 	
 	// method to return suggested meal
 	public ArrayList<Map<String, String>> SuggestMeal(int currUser, int num){
-		//System.out.println("meal currUser: " + currUser);
-		//System.out.println("meal num: " + num);
+		System.out.println("meal currUser: " + currUser);
+		System.out.println("meal num: " + num);
 		
 		
 		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		String query = "SELECT * FROM Users, DietFood, DietUser \n" + 
 				"WHERE DietUser.userID = Users.userID \n" + 
 				"AND DietFood.dietID = DietUser.dietID\n" +
-				"AND Users.userID != ?\n" + 
-				"AND Users.userID = ?";
+				"AND Users.userID != ?\n";
 		try {
-			PreparedStatement ps = conn.prepareStatement(query);
+			ps = conn.prepareStatement(query);
 			ps.setInt(1, currUser);
-			for(int j=1; j<=num; j++) {
-				if(j == currUser) {
-					num++;
-					continue;
-				}
-				Map<String, String> newMealToSuggest = new HashMap();
-				ps.setInt(2, j);
-				ResultSet rs = ps.executeQuery();
-				// an ArrayList to store the food item list
-				ArrayList<String> foodItemList = new ArrayList<String>();
+			ResultSet rs = ps.executeQuery();
+			int currDiet = 0;
+			// an ArrayList to store the food item list
+			ArrayList<String> foodItemList = new ArrayList<String>();
+			int suggested = 0;
+			
+			String currDietName = "";
+			int currDietID = 0;
+			String currCreator = "";
+			String currFoodID = "";
+			while(rs.next()) {
+				Map<String, String> newMealToSuggest = new HashMap<String, String>();
+				//if(rs.isAfterLast()) break;
+				int dietIdInDS = rs.getInt("dietID");
+				if(currDiet != dietIdInDS) {
+					if(currDiet != 0) {
+						newMealToSuggest.put("mealName", currDietName);
+						newMealToSuggest.put("mealId", Integer.toString(currDietID));
+						newMealToSuggest.put("createdBy", currCreator);
+						String foodItem = "";
+						for(int i=0; i<foodItemList.size(); i++) {
+							foodItem += foodItemList.get(i);
+							if(i != foodItemList.size()-1) {
+								foodItem += "; ";
+							}
+						}
+						newMealToSuggest.put("foodItems", foodItem);
+						foodItemList.clear();
+						result.add(newMealToSuggest);
+						//newMealToSuggest.clear();
+						suggested++;
+						System.out.println("suggested: " + suggested);
+						if(suggested == num) break;
+					}
+					currDiet = rs.getInt("dietID");
+					currDietName = rs.getString("dietName");
+					currDietID = rs.getInt("dietID");
+					currCreator = rs.getString("userName");
+					currFoodID = rs.getString("foodID");
+					foodItemList.add(this.getFoodName(currFoodID));
 					
-				String currFoodID = "";
-				
-				while(true) {
-					rs.next();
-					if(rs.isAfterLast()) break;
-					//System.out.println("in suggest meal: " + rs.getString("dietName"));
-					newMealToSuggest.put("dietName", rs.getString("dietName"));
-					newMealToSuggest.put("mealId", Integer.toString(rs.getInt("dietID")));
-					newMealToSuggest.put("createdBy", rs.getString("userName"));
-					if(!currFoodID.equals(rs.getString("foodID"))) {
-						currFoodID = rs.getString("foodID");
-						foodItemList.add(this.getFoodName(currFoodID));
-					}
 				}
-				String foodItem = "";
-				for(int i=0; i<foodItemList.size(); i++) {
-					foodItem += foodItemList.get(i);
-					if(i != foodItemList.size()-1) {
-						foodItem += "; ";
-					}
+				else {
+					foodItemList.add(this.getFoodName(rs.getString("foodID")));
 				}
-				if(!newMealToSuggest.isEmpty()) {
-					newMealToSuggest.put("foodItems", foodItem);
-					result.add(newMealToSuggest);
-				}
+				System.out.println("currDiet after loop: " + currDiet);
+				System.out.println("id in ds after loop: " + dietIdInDS);
 			}
-		} catch (SQLException e) {
-			System.out.println("sqle MealSuggestion: " + e.getMessage());
+		} catch (SQLException sqle) {
+			System.out.println("sqle in SuggestMeal: " + sqle.getMessage());
 		}
 		return result;
 	}

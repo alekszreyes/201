@@ -208,6 +208,7 @@ public class UserManager extends HttpServlet {
 
     		try {
     			String toPass = gson.toJson(result);
+    			System.out.println("toPass: " + toPass);
     			out.println(toPass);
     		} catch (Exception e) {
     			System.out.println("JSON: " + e.getMessage());

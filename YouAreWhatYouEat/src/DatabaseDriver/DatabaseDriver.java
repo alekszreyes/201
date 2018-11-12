@@ -480,6 +480,22 @@ public class DatabaseDriver {
 		return userID;
 	}
 	
+	public String getUserName(int userID) {
+		String userName = "";
+		String query = "SELECT * FROM Users WHERE userID = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, userID);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				userName = rs.getString("userName");
+			}
+		} catch (SQLException e) {		
+			System.out.println("sqle in getUserName: " + e.getMessage());
+		}
+		return userName;
+	}
+	
 	public ArrayList<Map<String, String> > SuggestUser(int num, int currUser){
 //		System.out.println("user currUser: " + currUser);
 //		System.out.println("user num: " + num);

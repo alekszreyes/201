@@ -1,14 +1,24 @@
+# Milestone Achieved: yizhoush-mt is merged into master
+To all: I have merged my Multi-Threading server branch to the master branch. It showed no conflict yet I can't tell if it works for everyone. So before you do any further changes (e.g. new commits), make sure you:  
+1. Pull from the newest master branch  
+2. Configure your Java Environment to use your version  
+3. Change the database login information in the `DatabaseDriver.java`  
+4. Clean your Tomcat working directory: I observed that Tomcat is lazy and it retains files from previous version  
+5. Give eclipse some time to index the new code and see if there are warnings or errors  
+6. Rerun the project and check if everything works well.  
+Currently, only the login notification is implemented. There can be duplicate notifications and we are working on that. If there are any problems, post here or on messenger, and I will look into it as soon as possible. Thank you all.  
+
 # Front-End to Back-End
 
 Every request is a POST. You can see the data by going [here](food.hiddetek.com). As I complete each call, I will include a version in that site. Instead of submitting it, it will print the data submitted in an alert box.
 
 ## UserManager
 
-### Register 
+### Register
 
 **Status**: Front end completed and tested.
 
-This is the first integration we should make. The challenge here, besides connecting the first bridge, will be to receive and store the image. [Here is something that might help](https://stackoverflow.com/questions/4006520/using-html5-file-uploads-with-ajax-and-jquery), at least pseudocode. 
+This is the first integration we should make. The challenge here, besides connecting the first bridge, will be to receive and store the image. [Here is something that might help](https://stackoverflow.com/questions/4006520/using-html5-file-uploads-with-ajax-and-jquery), at least pseudocode.
 
 I am including the name of the original file in case you need to extract the extension (png vs jpg, etc).
 
@@ -19,7 +29,7 @@ I am including the name of the original file in case you need to extract the ext
 - lastName: "some text"
 - email: "some text"
 - picture: [bynary] OR "undefined"
-- pictureName: "something.jpg" OR "something.png" 
+- pictureName: "something.jpg" OR "something.png"
 - password: "some text"
 
 ```javascript
@@ -38,7 +48,7 @@ I am including the name of the original file in case you need to extract the ext
 
 I built some tests that will let you know what answer are you sending to the front end and whether it conforms to this protocol. If successful, it will advance to the page <code>loggedIn.html</code>.
 
-- type: 
+- type:
   - "success": all is well
   - "exists": an account exists with this email
   - "invalid": parameters missing or bad request
@@ -55,7 +65,7 @@ if the user has already exists,
 }
 ```
 
-if successfully created an account, 
+if successfully created an account,
 
 ```javascript
 {
@@ -73,7 +83,7 @@ if the user does not fill in all of the information
 }
 ```
 
-### Login 
+### Login
 
 - type: "login"
 - email: ""
@@ -81,11 +91,11 @@ if the user does not fill in all of the information
 
 ##### Response (JSON object)
 
-- type: 
+- type:
   - "success": all is well
   - "notexists": doesn't exist
   - "invalid": parameters missing or bad request
-- message: 
+- message:
   - if it fails, "e.g. A message to display to the user <nonexists> or <invalid>"
   - if successful, userID
 
@@ -140,9 +150,9 @@ The response exists so that FE knows that BE acknowledged request as opposed as 
 
 ### Suggestions (People)
 
-This call should get people that the current user is not currently following. 
+This call should get people that the current user is not currently following.
 
-The field *number* in the request determines how many users return. 
+The field *number* in the request determines how many users return.
 
 The response field *likes* returns a few item foods that the suggested person has included in her/his diet.
 
@@ -179,7 +189,7 @@ The response field *likes* returns a few item foods that the suggested person ha
 
 ### Suggested Meals
 
-Pull friends' meals that are public or have been suggested to this user. 
+Pull friends' meals that are public or have been suggested to this user.
 
 *createdBy* returns the name of the creator of the meal.
 
@@ -260,7 +270,7 @@ User suggests a meal to a follower
 
 Add or remove a follow relation between two users
 
-Given two users user1 and user2, if user1 is following user2, delete the follow relation. 
+Given two users user1 and user2, if user1 is following user2, delete the follow relation.
 Otherwise let user1 follow user2.
 
 ##### Request
@@ -312,16 +322,16 @@ The backend should return all the food items that begin with the string passed i
 - foodID:
 - foodName:
 
-e.g. 
+e.g.
 
 ```javascript
 [
     {
-        "foodId":"2", 
+        "foodId":"2",
         "foodName":"apple"
     },
     {
-        "foodId":"3", 
+        "foodId":"3",
         "foodName":"orange"
     }
 ]
@@ -434,7 +444,7 @@ if comes from a logged user, make sure you are tracking the calories that the us
 Include the mealId so that FE knows how to id it for future requests.
 
 ```javascript
-{ 
+{
     type: "success",
     mealId: "4"
 }
@@ -442,11 +452,11 @@ Include the mealId so that FE knows how to id it for future requests.
 
 ### Delete Meal
 
-When deleting a meal, ensure that no other user has a relationship with the same mealId. 
+When deleting a meal, ensure that no other user has a relationship with the same mealId.
 
 If no other user has a relationship to the same mealId, you can delete the relationship between the mealId and the foodId rows along with the relationship between the mealId and userId. Otherwise, delete only the relationship between the mealId and the userId.
 
-#### Request 
+#### Request
 
 ```javascript
 {
@@ -488,12 +498,12 @@ When a user decides to try a suggested meal
 
 ### Toggle meal privacy
 
-Meals are private by default. Upon a call of this call, a meal should be declared 
+Meals are private by default. Upon a call of this call, a meal should be declared
 
 - public if it is private or
 - private if it is public
 
-#### Request 
+#### Request
 
 ```javascript
 {
@@ -510,7 +520,7 @@ Meals are private by default. Upon a call of this call, a meal should be declare
 }
 ```
 
-or 
+or
 
 ```javascript
 {
@@ -594,7 +604,7 @@ User that has been logged in `loggedIn.html`. As soon as the page loads, the fro
 
 **Method name** - `notify(data) `
 
-**Location** - notify.js 
+**Location** - notify.js
 
 **Purpose** - to display message boxes given a string
 
@@ -620,5 +630,4 @@ This file has been implemented so that when the websocket receives a message, it
 
 ## USDA Food Database
 
-Instructions: In MySQLWorkbench, click on Server --> Data Import, and import the file nutrition_sr28.sql. After this process is completed, a database called "nutrition" will be created. See the script example_query_usda.sql for an example on how to query all the nutritional information for the search "smoothie". 
-
+Instructions: In MySQLWorkbench, click on Server --> Data Import, and import the file nutrition_sr28.sql. After this process is completed, a database called "nutrition" will be created. See the script example_query_usda.sql for an example on how to query all the nutritional information for the search "smoothie".

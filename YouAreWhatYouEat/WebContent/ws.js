@@ -40,7 +40,7 @@ socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss");
     
     socket.onopen = function(event){
     	console.log("Connected to websocket");
-    	socket.send("login");
+    	socket.send("logged");
     }
     socket.onclose = function(event){
     	console.log("Disconnected");

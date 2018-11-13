@@ -61,19 +61,19 @@ public class UserServer {
 	
 	@OnMessage
 	public void message(String message, Session session) {
-		if (message.equals("login")) {
+		if (message.equals("logged")) {
 			message = users.getUser(id).getUsername() + " has just logged in!";
 		}
 		
 		System.out.println("Received message from user " + id + ": " + message);
 		for (Map.Entry<Session, Integer> su: sessions.entrySet()) {
-//			if (((RegisteredUser) users.getUser(su.getValue())).isFollowing(id)) {
+			if (((RegisteredUser) users.getUser(su.getValue())).isFollowing(id)) {
 				try {
 					su.getKey().getBasicRemote().sendText(message);
 				} catch (IOException ioe) {
 					System.out.println("ioe: " + ioe.getMessage());
 				}
-			//}
+			}
 		}
 	}
 	

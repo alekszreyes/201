@@ -4,7 +4,7 @@ Every request is a POST. You can see the data by going [here](food.hiddetek.com)
 
 ## UserManager
 
-#### Register 
+### Register 
 
 **Status**: Front end completed and tested.
 
@@ -73,9 +73,7 @@ if the user does not fill in all of the information
 }
 ```
 
-
-
-#### Login 
+### Login 
 
 - type: "login"
 - email: ""
@@ -120,8 +118,7 @@ if the user does not fill all of the information
 }
 ```
 
-
-#### Logout
+### Logout
 
 Front end sends
 
@@ -141,7 +138,7 @@ Back end response
 
 The response exists so that FE knows that BE acknowledged request as opposed as the connection broke or the like.
 
-#### Suggestions (People)
+### Suggestions (People)
 
 This call should get people that the current user is not currently following. 
 
@@ -180,7 +177,7 @@ The response field *likes* returns a few item foods that the suggested person ha
 
 ```
 
-#### Suggested Meals
+### Suggested Meals
 
 Pull friends' meals that are public or have been suggested to this user. 
 
@@ -211,7 +208,7 @@ Pull friends' meals that are public or have been suggested to this user.
 }]
 ```
 
-#### Followers
+### Followers
 
 Return an array of the followers of this user
 
@@ -237,7 +234,29 @@ Return an array of the followers of this user
 }]
 ```
 
-#### Tangle (add or remove) Follower Relation
+### Suggest a Meal to Follower
+
+User suggests a meal to a follower
+
+##### Request
+
+```javascript
+{
+    type: "suggestMealToFollower",
+    followerId: 3,
+    mealId: 5
+}
+```
+
+##### Response
+
+```javascript
+{
+    "type": "success"
+}
+```
+
+### Tangle (add or remove) Follower Relation
 
 Add or remove a follow relation between two users
 

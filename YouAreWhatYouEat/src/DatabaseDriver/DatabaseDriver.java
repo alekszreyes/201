@@ -480,6 +480,7 @@ public class DatabaseDriver {
 		return userID;
 	}
 	
+	// method to get userName given id of the user
 	public String getUserName(int userID) {
 		String userName = "";
 		String query = "SELECT * FROM Users WHERE userID = ?";
@@ -668,7 +669,7 @@ public class DatabaseDriver {
 			for(int i=0; i<followers.size(); i++) {
 				Map<String, String> newFollower = new HashMap();
 				ps.setInt(1, followers.get(i));
-				ps.executeQuery();
+				ResultSet rs = ps.executeQuery();
 				while(rs.next()) {
 					newFollower.put("userId", Integer.toString(rs.getInt("userID")));
 					newFollower.put("name", rs.getString("userName"));

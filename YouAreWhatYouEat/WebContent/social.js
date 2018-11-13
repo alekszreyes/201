@@ -94,30 +94,94 @@ $(function() {
                 $("#try" + mealId).remove();
             });
         });
-        alert(d);
+        console.log(d);
     });
 
-    /**
-    // get friends
-    $.post("UserManager", {
-        type: "followers",
-        number: 2
+    // get followers
+    $.ajax("UserManager", {
+        type: 'post',
+        data: {
+            type: "followers",
+            number: 2
+        },
+        async: false
     })
     .done(function(d) {
-        alert(d);
+        var json = JSON.parse(d);
+        let str = '';
+
+        $.each(json, function(i, user) {
+            str += '<tr><td><img src="' + user.picture + '" /></td>';
+            str += '<td>' + user.name + '</td>';
+            str += '<td><button class="btn btn-danger suggest" userId="' + 
+                user.userId + '">Suggest a meal</button></td>';
+            str += '</tr>';
+        });
+
+        $(str).prependTo("#followersTable > tbody");
+
+        $(".suggest").click(function() {
+
+            let followerId = $(this).attr("userId");
+
+            // display modal
+            $.ajax("SearchEngine", {
+                type: 'post',
+                data: {
+                    type: 'getMeals'
+                },
+                async: false
+            })
+            // display meals
+            .done(function(e) {
+                // display meals and modal
+                let json = JSON.parse(e);
+                let str = '';
+
+                $.each(json, function(i, meal) {
+                    str += '<tr><td><b>' + meal.name + '</td>'
+                        + '<td>' + meal.foodItems + '</td>'
+                        + '<td><button class="btn btn-default suggestMeal" '
+                        + 'mealId="' + meal.mealId + '" '
+                        + 'followerId="' + followerId + '">Suggest'
+                        + '</button></td></tr>';
+                });
+
+                $(str).prependTo("#mealSuggestionsTable > tbody");
+
+                $(".suggestMeal").click(function(){
+                    let followerId = $(this).attr("followerId");
+                    let mealId = $(this).attr("mealId");
+
+                    $.ajax("SearchEngine", {
+                        type: 'post',
+                        data: {
+                            type: "suggestMealToFollower",
+                            followerId: followerId,
+                            mealId: mealId
+                        },
+                        async: false
+                    })
+                    .done(function(d) {
+                        console.log("followerId: " + followerId);
+                        console.log("mealId: " + mealId);
+                        console.log(d);
+                        $("#myModal").modal("hide");
+                    });
+                });
+
+                // show modal
+                $("#myModal").modal();
+            });
+        });
     });
-    // toggle friends
-    $.post("UserManager", {
-        type: "followRelation",
-        number: 2
-    })
-    .done(function(d) {
-        alert(d);
-    });
+<<<<<<< HEAD
 <<<<<<< HEAD
 });
 
 =======
     **/
+=======
+>>>>>>> master
 });
 

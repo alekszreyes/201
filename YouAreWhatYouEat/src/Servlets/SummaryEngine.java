@@ -53,7 +53,7 @@ public class SummaryEngine extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String email = (String) request.getSession().getAttribute("userEmail");
     	System.out.println(email);
-    	
+    	System.out.println("in summary engine");
     	String json = "";
     	String responseText = "";
     	ArrayList<String> axis = new ArrayList<>();
@@ -75,6 +75,7 @@ public class SummaryEngine extends HttpServlet {
     				+ "AND DietFood.foodID = NUT_DATA.NDB_No ";
     		
     		PreparedStatement ps = conn.prepareStatement(q);
+    		email = "alice@gmail.com";
     		ps.setString(1, email);
     		ResultSet rs = ps.executeQuery();
     		HashMap<Integer, Double> result = new HashMap<>();
@@ -99,6 +100,7 @@ public class SummaryEngine extends HttpServlet {
     			int dayCreated = c.get(Calendar.DAY_OF_YEAR);
     			System.out.println(dayCreated + " " + dayToday);
     			int dayPast = dayToday - dayCreated;
+    			System.out.println("datPast: " + dayPast);
     			if (dayPast <= 14 && dayPast >= 1) {
     				if (!result.containsKey(dayPast)) {
     					System.out.println("ADD " + dayPast);
@@ -143,7 +145,7 @@ public class SummaryEngine extends HttpServlet {
     		responseText += "cnfe: " + cnfe.getMessage();
     	}
     	
-    	CalResponse r = new CalResponse(axis, week1, week2, responseText);
+    	CalResponse r = new CalResponse(axis, week1, week2);
     	System.out.println(r.week2.get(6));
     	Gson gson = new Gson();
 		String j = gson.toJson(r);
@@ -151,7 +153,7 @@ public class SummaryEngine extends HttpServlet {
 		System.out.println(j);
     	
 		PrintWriter pw = response.getWriter();
-		pw.print(json);
+		pw.print(j);
     	
     }
 
@@ -161,11 +163,9 @@ class CalResponse {
 	ArrayList<String> axis;
 	ArrayList<Double> week1;
 	ArrayList<Double> week2;
-	String responseText;
-	CalResponse(ArrayList<String> a, ArrayList<Double> w1, ArrayList<Double> w2, String rt) {
+	CalResponse(ArrayList<String> a, ArrayList<Double> w1, ArrayList<Double> w2) {
 		axis = a;
 		week1 = w1;
 		week2 = w2;
-		responseText = rt;
 	}
 }

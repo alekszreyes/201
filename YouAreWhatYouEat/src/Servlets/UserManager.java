@@ -99,7 +99,7 @@ public class UserManager extends HttpServlet {
     		System.out.println("firstname: " + firstName);
     		System.out.println("lastname: " + lastName);
     		System.out.println("email: " + email);
-    		//System.out.println("picture: " + picture);
+    		System.out.println("picture: " + picture);
     		System.out.println("password: " + password);
     		
     		if(firstName == null || lastName == null || email == null || picture == null || password == null
@@ -218,12 +218,13 @@ public class UserManager extends HttpServlet {
     	// return all followers of the current user
     	if(type != null && type.equals("followers")) {
     		System.out.println("in followers");
-    		int currUser = (int) session.getAttribute("userID");
-    		//int currUser = 2;
+    		//int currUser = (int) session.getAttribute("userID");
+    		int currUser = 1;
     		ArrayList<Map<String, String> > result = databaseDriver.getFollowers(currUser);
     		try {
     			String toPass = gson.toJson(result);
     			out.println(toPass);
+    			System.out.println(toPass);
     		} catch (Exception e) {
     			System.out.println("sqle: " + e.getMessage());
     		}

@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- from bootstrap template -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script src="jquery-1.11.1.min.js"></script>
+
+    <title>Test Upload</title>
+
+    <!-- from bootstrap -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+      <form method="post" action="Test" enctype="multipart/form-data">
+          <input type="file"  id="file" name="file"><br>
+          <input type="submit"><br>
+      </form>
+          <button id="ajaxBtn" class="btn btn-danger" >Send as ajax</button>
+  </body>
+<script>
+
+
+$("#ajaxBtn").click(function(){
+
+    // prepare file (from https://stackoverflow.com/questions/4006520/using-html5-file-uploads-with-ajax-and-jquery)
+    var reader = new FileReader();
+    reader.readAsText( document.getElementById("file").files[0] );
+
+    // when reading
+    reader.onload = function(event) {
+
+        // send and form
+        $.ajax("Test", {
+            type: 'post',
+            data: {
+                picture: event.target.result,
+                pictureName: document.getElementById('file').files[0].name
+            },
+            async: true
+        })
+        .fail(function(d) {
+
+            console.log(d.status + ": " + d.statusText);
+        })
+        .done( function(d){
+            console.log("attempting to parse " + d);
+            var json;
+            try {
+                alert(d);
+            }
+            catch(e) {
+                console.log("Unable to parse answer from server.\n"
+                    +";p");
+            }
+        });
+    }
+});
+
+
+</script>
+</html>
+
+

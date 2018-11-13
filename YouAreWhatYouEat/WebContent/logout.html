@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Food Data</title>
+        <script src="jquery-1.11.1.min.js"></script>
+    </head>
+    <body role="document">
+    </body>
+<script>
+$.post("UserManager", { type: "logout" })
+.done(function(d){
+    window.location.replace("login.html");
+})
+.fail(function(d){
+    alert("Invalid reponse " + d.statusText);
+});
+</script>
+</html>

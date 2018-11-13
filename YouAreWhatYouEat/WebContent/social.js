@@ -17,7 +17,7 @@ $(function() {
           
                 let str = '<tr id="r' + user.userId 
                     +'"><td><img src="' + user.picture
-                    + '" /></td>'
+                    + '" height="120" /></td>'
                     + '<td><b>' + user.name + '</b></td>'
                     + '<td>' + user.meals + '</td>'
                     + '<td><b>Likes</b><br>' + user.likes + '</td>'
@@ -111,7 +111,7 @@ $(function() {
         let str = '';
 
         $.each(json, function(i, user) {
-            str += '<tr><td><img src="' + user.picture + '" /></td>';
+            str += '<tr><td><img src="' + user.picture + '" height="120" /></td>';
             str += '<td>' + user.name + '</td>';
             str += '<td><button class="btn btn-danger suggest" userId="' + 
                 user.userId + '">Suggest a meal</button></td>';
@@ -175,8 +175,4 @@ $(function() {
             });
         });
     });
-
 });
-
-
-

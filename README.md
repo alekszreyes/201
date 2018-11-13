@@ -6,6 +6,7 @@ To all: I have merged my Multi-Threading server branch to the master branch. It 
 4. Clean your Tomcat working directory: I observed that Tomcat is lazy and it retains files from previous version  
 5. Give eclipse some time to index the new code and see if there are warnings or errors  
 6. Rerun the project and check if everything works well.  
+
 Currently, only the login notification is implemented. There can be duplicate notifications and we are working on that. If there are any problems, post here or on messenger, and I will look into it as soon as possible. Thank you all.  
 
 # Front-End to Back-End

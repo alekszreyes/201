@@ -136,8 +136,8 @@ Log in</a></li>
             if(s.type == "success") {
 
                 try {
-                    connectToWebsocket();
-                    socketSend("logged");
+                    loginConnect();
+                    //socketSend("logged");
                 }catch(e) {
                     console.log("error connecting to websocket");
                 }

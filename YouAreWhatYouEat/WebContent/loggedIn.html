@@ -14,13 +14,13 @@
 
     <!-- from alex -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<!-- Material Design Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/css/mdb.min.css">
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/js/mdb.min.js"></script>
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/css/mdb.min.css">
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.11/js/mdb.min.js"></script>
 
 
     <link href="styles.css" rel="stylesheet"/>
@@ -36,7 +36,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
+</head>
 
 <body role="document">
 <nav class="navbar navbar-inverse">
@@ -130,14 +130,6 @@ Log out</a></li>
     <div class="col-sm-6">
         <h3>Nutritional Information</h3>
         <p id="info">
-            List of food objects, with each food object containing: <br>
-            kcal per 100gr, <br>
-            protein per 100 grams, <br>
-            carbohydrates per 100 grams, <br>
-            brand of the food, <br>
-            if the food is generic or brandid, a<br>
-            list of existing measures for the food, <br>
-            contents label of the food.
         </p>
         <button class="btn btn-danger" id="addBtn" style="display: none">Add to meal</button>
     </div>
@@ -159,42 +151,6 @@ Log out</a></li>
         <h3>My Meals</h3>
         <table class="table" id="mealList">
             <tr>
-                <td>
-                    Meal name
-                </td>
-                <td>
-                   Ammonia cookie, 
-                   Cuisine of Antebellum America, 
-                   Apple butter
-                </td>
-                <td>
-                    Private
-                </td>
-                <td>
-                    <button class="btn btn-default">Share</button>
-                </td>
-                <td>
-                    <button class="btn btn-default">X</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Meal name
-                </td>
-                <td>
-                   Ammonia cookie, 
-                   Cuisine of Antebellum America, 
-                   Apple butter
-                </td>
-                <td>
-                    Private
-                </td>
-                <td>
-                    <button class="btn btn-default">Share</button>
-                </td>
-                <td>
-                    <button class="btn btn-default">X</button>
-                </td>
             </tr>
         </table>
     </div>
@@ -204,7 +160,7 @@ Log out</a></li>
 </div>
 
     <div id="bottom">
-        Created by WeNeedAName Inc. All rights reserved
+        Created by YouAreWhatYouEat Inc. All rights reserved
     </div>
 
   <!-- Modal -->
@@ -297,74 +253,54 @@ Log out</a></li>
 <script src="ws.js"></script>
 <script src="search.js"></script>
 <script>
-
 $(".nav li").removeClass("active");
 $("#searchNav").addClass("active");
-
 // button from modal
 $(".add").click(function(){
     $("#myModal").modal("hide");
     let item = $(this).attr("data") ;
-
-    alert("adding " + s[item].foodName);
-
+    console.log("adding " + s[item].foodName);
     addFoodToMeal(s[item].foodId, s[item].foodName);
-
 });
-
 // add button
 $("#addBtn").click(function(){
     // add to my meal
     var selected = $("#list").children("option:selected");
-
     $.each(selected, function(i,d){
         var id = d.attributes.id.value;
         id = id.substr(1);
         console.log(id + " " + d.text);
-
         addFoodToMeal(id, d.text);
-
     });
 });
-
 var mealItems = [];
-
 function addFoodToMeal(id, name) {
-
     // add to meal items
     mealItems.push(id);
-
     // add button
     $("#myMeal").show();
     let str = '<button class="btn btn-default mealFood" item="' + id
         + '">' + name + ' X </button>';
     $("#mealItems").html( $("#mealItems").html() + str );
-
     // listener to delete
     $(".mealFood").click(function() {
-
         // remove data
         let id = $(this).attr("item");
         mealItems.splice(mealItems.indexOf(id), 1);
-
         // remove button
         $(this).remove();
     });
 }
-
 $("#saveMeal").click(function(){
     // hide warning message
     $("#modalMessage").hide();
     $("#mealName").val("");
-
     // display modal
     $("#mealModal").modal();
     $("#mealName").focus();
 });
-
 // this comes from the modal when saving a meal
 $("#saveMealModal").click(function(){
-
     // if no name
     if($("#mealName").val() == "") {
         $("#modalMessage").show();
@@ -378,35 +314,27 @@ $("#saveMealModal").click(function(){
     })
     .done(function(d){
         // print response
-        alert("response: " + d);
-
+        console.log("response: " + d);
         try{
             var json = JSON.parse(d);
-
             // capture meal and diplay it
             displayMeal(json.mealId);
-
             $("#mealModal").modal("hide");
-
             $(".mealFood").each(function(){
                 $(this).click();
             });
         } catch(e) {
-            alert("Problem parsing");
+            console.log("Problem parsing");
         }
-
         // hide create my meal div
         $("#myMeal").hide();
     });
 });
-
 function displayMeal(mealId) {
-    alert(mealId);
-
+    console.log(mealId);
     let name = $("#mealName").val();
     let ingredients = "";
     let first = true;
-
     $(".mealFood").each(function(i,d){
         if(!first) { ingredients += ", "; }
         else {
@@ -416,15 +344,11 @@ function displayMeal(mealId) {
         name = name.substr(0, name.length - 3);
         ingredients += name;
     });
-
     addMealRow(mealId, name, ingredients, "Private");
 }
-
 function addMealRow(mealId, name, ingredients, privacyS) {
-
     let privacy = (privacyS == "Public") ? "Sharing with Friends" : "Private";
     let buttonVal = (privacyS == "Public") ? "Make Private" : "Share";
-
     let str = '<tr id="r'+ mealId +'"><td>' + name + '</td>'
         + '<td>' + ingredients + '</td>'
         + '<td id="p'+mealId+'">' + privacy + '</td><td>'
@@ -434,46 +358,37 @@ function addMealRow(mealId, name, ingredients, privacyS) {
         + '</td>';
     
     $(str).prependTo("#mealList > tbody");
-
     // listener for buttons
     $(".share").click(function(){
         let mealId = $(this).attr("mealid");
-        alert("sharing meal with id " + mealId);
+        console.log("sharing meal with id " + mealId);
         var obj = $(this);
-
         $.post("SearchEngine", {
             type: "toggleMealPrivacy",
             mealId: mealId
         })
         .done(function(d){
-            alert("response " + d);
+            console.log("response " + d);
             var json = JSON.parse(d);
-
             let privacy = (json.newStatus == "Public") ? "Sharing with Friends" : "Private";
             let buttonVal = (json.newStatus == "Public") ? "Make Private" : "Share";
-
             $("#p"+ mealId).text(privacy);
             obj.text( buttonVal );
         });
     });
-
     $(".delete").click(function(){
-
         let mealId = $(this).attr("mealid");
-        alert("deleting meal id " + mealId);
-
+        console.log("deleting meal id " + mealId);
         $.post("SearchEngine", {
             type: "deleteMeal",
             mealId: mealId
         })
         .done(function(d){
-            alert("response " + d);
+            console.log("response " + d);
             $("#r"+ mealId).remove();
         });
     });
-
 }
-
 $(function() {
     $.post("SearchEngine", {
         type: "getMeals",
@@ -486,10 +401,6 @@ $(function() {
         });
     });
 });
-
-
-
 </script>
 </body>
 </html>
-

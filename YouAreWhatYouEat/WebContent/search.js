@@ -2,7 +2,7 @@ var s = "";
 $(function() {
 
     connectToWebsocket();
-    
+
     //$("#cmpBtn").hide();
     listener();
     query();

@@ -177,7 +177,7 @@ public class UserManager extends HttpServlet {
     		//int currUser = (int)session.getAttribute("userID");
     		
     		// ***for testing
-    		int currUser = 1;
+    		int currUser = 4;
     		int numSuggest = 2;
     		// ***
     		
@@ -195,7 +195,7 @@ public class UserManager extends HttpServlet {
     		
     		// ***for DEBUG only
     		int numToSuggest = 2;
-    		int currUser = 1;
+    		int currUser = 4;
     		// ***
     		
     		//System.out.println("num from front end: " + request.getParameter("number"));
@@ -219,7 +219,7 @@ public class UserManager extends HttpServlet {
     	if(type != null && type.equals("followers")) {
     		System.out.println("in followers");
     		//int currUser = (int) session.getAttribute("userID");
-    		int currUser = 1;
+    		int currUser = 4;
     		ArrayList<Map<String, String> > result = databaseDriver.getFollowers(currUser);
     		try {
     			String toPass = gson.toJson(result);

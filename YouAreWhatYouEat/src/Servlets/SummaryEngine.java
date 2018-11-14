@@ -75,7 +75,7 @@ public class SummaryEngine extends HttpServlet {
     				+ "AND DietFood.foodID = NUT_DATA.NDB_No ";
     		
     		PreparedStatement ps = conn.prepareStatement(q);
-    		email = "alice@gmail.com";
+    		
     		ps.setString(1, email);
     		ResultSet rs = ps.executeQuery();
     		HashMap<Integer, Double> result = new HashMap<>();

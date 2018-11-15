@@ -226,6 +226,9 @@ footer p {
 .navbar-inverse .navbar-brand {
     color: #eee;
 }
+.navbar {
+    margin-bottom: 0;
+}
 #bottom {
     background: #fafafa;
     text-align: center;
@@ -244,3 +247,6 @@ footer p {
 a {
     color: #de2424;
 }
+
+
+

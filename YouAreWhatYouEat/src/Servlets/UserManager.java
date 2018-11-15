@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -81,7 +82,34 @@ public class UserManager extends HttpServlet {
     	}
     	return r;
     }
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    // dealing with picture related stuff only
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	System.out.println("in doGet");
+    	HttpSession session = request.getSession();
+    	SaveImage si = new SaveImage();
+    	String email = (String) session.getAttribute("userEmail");
+    	String file = request.getParameter("file");
+    	
+    	//String fileName = Integer.toString(databaseDriver.getCurrUserID(email)) + ".png";
+    	System.out.println("doGet email: " + email);
+    	System.out.println("pictureName: " + file);
+    	
+		// the following method save the image and return the relevant path to the image
+		String picture = si.saveImage(request, response, file);
+		System.out.println("path: " + picture);
+		
+		databaseDriver.saveImage(picture, email);
+		
+		// redirect the next page
+		String nextPage = "/loggedIn.html";
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextPage);
+		dispatcher.forward(request, response);
+		
+		// announce the webSocket
+		
+    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String type = request.getParameter("type");
     	System.out.println("current type: " + type);
     	PrintWriter out = response.getWriter();
@@ -94,16 +122,17 @@ public class UserManager extends HttpServlet {
     		String firstName = request.getParameter("firstName");
     		String lastName = request.getParameter("lastName");
     		String email = request.getParameter("email");
-    		String picture = request.getParameter("picture");
     		String password = request.getParameter("password");
+    		String picture = ""; // ignore picture for the first Ajax call
+    		
     		System.out.println("firstname: " + firstName);
     		System.out.println("lastname: " + lastName);
     		System.out.println("email: " + email);
     		System.out.println("picture: " + picture);
     		System.out.println("password: " + password);
     		
-    		if(firstName == null || lastName == null || email == null || picture == null || password == null
-    		|| firstName.equals("") || lastName.equals("") || email.equals("") || picture.equals("") ) {
+    		if(firstName == null || lastName == null || email == null || password == null
+    		|| firstName.equals("") || lastName.equals("") || email.equals("")) {
     			status = "invalid";
     		}
     		else {
@@ -244,6 +273,27 @@ public class UserManager extends HttpServlet {
     		}
     		try {
     			String toPass = gson.toJson(frr);
+    			out.println(toPass);
+    		} catch (Exception e) {
+    			System.out.println("JSON: " + e.getMessage());
+    		}
+    	}
+    	
+    	if(type != null && type.equals("tryMeal")) {
+    		//DatabaseDriver databaseDriver = new DatabaseDriver();
+    		//databaseDriver.connect();
+    		
+    		int dietID = Integer.parseInt(request.getParameter("mealId"));
+    		int currUser = (int) session.getAttribute("userID");
+    		TypeResponse tr = new TypeResponse();
+    		if(databaseDriver.tryMeal(currUser, dietID)) {
+    			tr.type = "success";
+    		}
+    		else {
+    			tr.type = "error";
+    		}
+    		try {
+    			String toPass = gson.toJson(tr);
     			out.println(toPass);
     		} catch (Exception e) {
     			System.out.println("JSON: " + e.getMessage());

@@ -12,9 +12,10 @@ document.body.innerHTML += '<div class="notifications bottom-right"></div>';
 
 function notify(data){
     $('.bottom-right').notify({
-	message: {
-	    text: data
-	}
+        message: { text: data },
+        fadeOut: { enabled: true, delay: 20000 }
     }).show();
 }
+
+
 

@@ -87,25 +87,33 @@ function listener() {
                 // check it conforms
                 var json = JSON.parse(d);
                 s = json;
-                console.log("parsing: " + json);
-                console.log("foodId: " + json.foodId);
-                console.log("foodName: " + json.foodName);
-                console.log("calories: " + json.calories);
-                console.log("protein: " + json.protein);
-                console.log("vitamin: " + json.vitamin);
-                console.log("sugar: " + json.sugar);
+                
+                if(json == "") { 
+                    $("#info").text("Server's response is empty"); 
+                }
+                else {
 
-                // display info
-                const br = '<br>';
-                $("#info").html('<h4>' + json.foodName + '</h4>'
-                    + "<b>calories:</b> " + json.calories + br
-                    + "<b>protein:</b> " + json.protein + br
-                    + "<b>vitamin:</b>" + json.vitamin + br
-                    + "<b>sugar:</b> " + json.sugar + br
-                );
+                    console.log("parsing: " + json);
+                    console.log("foodId: " + json.foodId);
+                    console.log("foodName: " + json.foodName);
+                    console.log("calories: " + json.calories);
+                    console.log("protein: " + json.protein);
+                    console.log("vitamin: " + json.vitamin);
+                    console.log("sugar: " + json.sugar);
+
+                    // display info
+                    const br = '<br>';
+                    $("#info").html('<h4>' + json.foodName + '</h4>'
+                        + "<b>calories: </b> " + json.calories + br
+                        + "<b>protein: </b> " + json.protein + br
+                        + "<b>vitamin: </b>" + json.vitamin + br
+                        + "<b>sugar: </b> " + json.sugar + br
+                    );
+                }
             }
             catch(e) {
                 console.log("error parsing");
+                $("#info").text("Error: " + d);
             }
         });
 
@@ -147,7 +155,7 @@ function listener() {
 
                     s = json;
                 } catch(e) {
-                    alert("error parsing");
+                    alert("error parsing" + d);
                 }
 
                 $("#myModal").modal();
@@ -180,3 +188,4 @@ $("#cmpBtn").click( function(){
         compare = true;
     }
 });
+

@@ -122,13 +122,14 @@ $(function() {
         let str = '';
 
         $.each(json, function(i, user) {
-            str += '<tr><td><img src="' + user.picture + '" height="120" /></td>';
+            str += '<tr><td><img src="' + user.picture + '" height="120" class="prof_sugg" /></td>';
             str += '<td>' + user.name + '</td>';
             str += '<td><button class="btn btn-danger suggest" userId="' + 
                 user.userId + '">Suggest a meal</button></td>';
             str += '</tr>';
         });
 
+        $("#followersTable tr").remove;
         $(str).prependTo("#followersTable > tbody");
 
         $(".suggest").click(function() {
@@ -158,6 +159,7 @@ $(function() {
                         + '</button></td></tr>';
                 });
 
+                $("#mealSuggestionsTable tr").remove();
                 $(str).prependTo("#mealSuggestionsTable > tbody");
 
                 $(".suggestMeal").click(function(){

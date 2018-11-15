@@ -64,7 +64,7 @@ public class SummaryEngine extends HttpServlet {
     	}
     	try {
     		Class.forName("com.mysql.jdbc.Driver");
-    		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nutrition?user=root&password=peter_sheng&useSSL=false");
+    		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nutrition?user=root&password=lunjohnzhang&useSSL=false");
     		String q = 
     				"SELECT Users.userID, DietUser.dietID, DietUser.creationTime, DietFood.foodID, NUT_DATA.NDB_No, NUT_DATA.Nutr_No, NUT_DATA.Nutr_Val "
     				+ "FROM Users, DietFood, DietUser, NUT_DATA "

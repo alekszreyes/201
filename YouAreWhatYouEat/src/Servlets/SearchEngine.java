@@ -293,7 +293,7 @@ public class SearchEngine extends HttpServlet {
     		
     		int currUser = (int) session.getAttribute("userID");
     		
-//    		int currUser = 2;
+    		//int currUser = 3;
     		ArrayList<Map<String, String>> result = databaseDriver.getMeals(currUser);
     		
     		try {
@@ -305,6 +305,7 @@ public class SearchEngine extends HttpServlet {
     		}
     		databaseDriver.close();
     	}
+    	
     }
 }
 

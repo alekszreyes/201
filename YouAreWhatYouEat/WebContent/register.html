@@ -57,7 +57,7 @@
               </ul>
       <ul class="nav navbar-nav navbar-right">
       <li id="loginNav"><a href="login.html"><span class="glyphicon glyphicon-log-in"></span>
-		Log in</a></li>
+                Log in</a></li>
       </ul>
     </div>
   </div>
@@ -65,7 +65,7 @@
 
     <div id="top">
         <img class="center-block" height="120" 
-        	src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVehmHJrXNRaFSiD2mmexUgE0sXK52smE-EtPrPikUhP-2EZoQ" />
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVehmHJrXNRaFSiD2mmexUgE0sXK52smE-EtPrPikUhP-2EZoQ" />
     </div>
 
 
@@ -82,7 +82,7 @@
         </div>
     </div>
 
-    <form role="form" method="post">
+    <form role="form" method="get" action="UserManager" enctype="multipart/form-data" id="form">
 
         <div class="form-group">
             <label for="firstName">First Name</label>
@@ -95,7 +95,7 @@
             <label for="lastName">Last Name</label>
 
             <input type="text" class="form-control" id="lastName" 
-                name="lastName" placeholder="Bond" >
+                name="lastName" placeholder="Bond">
         </div>
 
 
@@ -121,7 +121,7 @@
         </div>
         <div class="form-group">
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" 
+                <input class="form-check-input" type="checkbox" id="tosCheck"
                     value="1" name="tosCheck">
                 <label class="form-check-label" for="tosCheck">
                     I agree to the 
@@ -131,13 +131,13 @@
             </div>
         </div>
         <div class="form-group">
-	        <label for="file">Profile Picture</label>
-	        <input type="file" class="form-control" id="file" name="file">
-	    </div>
-	    
-	    <input type="hidden" name="type" value="register" >
+                <label for="file">Profile Picture</label>
+                <input type="file" class="form-control" id="file" name="file">
+            </div>
+            
+            <input type="hidden" name="type" value="register" >
 
-        <button type="submit" class="btn btn-danger" 
+        <button type="submit" class="btn btn-danger" id="registerBtn"
             value="register">Register</button>
     </form>
 </div>
@@ -154,11 +154,14 @@
 <script src="ws.js"></script>
 <script>
 
-$("form").submit( (e)=>{
+$("#registerBtn").click( (e)=>{
 
     e.preventDefault();
 
+    if(!valid()) { return false; }
+
     function ajax(file, fileName) {
+
         // send and form
         $.ajax("UserManager", {
             type: 'post',
@@ -175,13 +178,13 @@ $("form").submit( (e)=>{
         })
         .fail(function(d) {
 
-        	console.log(d.status + ": " + d.statusText);
+                console.log(d.status + ": " + d.statusText);
         })
         .done( function(d){
-        	console.log("attempting to parse " + d);
+                console.log("attempting to parse " + d);
             var json;
             try {
-            	json = JSON.parse(d);
+                json = JSON.parse(d);
                 console.log("parse successful. Checking fields");
                 console.log("type: " + json.type);
                 console.log("message: " + json.message);
@@ -196,7 +199,8 @@ $("form").submit( (e)=>{
                         console.log("error communicating with websocket");
                     }
                     finally {
-                        window.location.href="loggedIn.html";
+                        // window.location.href="loggedIn.html";
+                        $("#form").submit();
                     }
                 }
                 else {
@@ -231,6 +235,59 @@ $("form").submit( (e)=>{
 
 });
 
+// fields to check
+let fields = {
+    "firstName" : "first name",
+    "lastName" : "last name",
+    "email" : "email",
+    "password" : "password",
+    "confirm" : "confirmation"
+};
+
+function valid(){
+
+
+    let ind = true;
+
+    // iterate and check
+    $.each(fields, function(k,v) {
+        if($("#"+k).val() == "") {
+            notify("Please enter your " + v);
+            ind = false;
+            $("#"+k).focus();
+            return false;
+        }
+    });
+
+    if(!ind) { return false; }
+
+    if( $("#password").val() != $("#confirm").val() ) {
+        notify("passwords don't match");
+        $("#confirm").focus();
+        return false;
+    }
+
+    // checkbox
+    if($("#tosCheck:checked").length == 0) {
+        notify("You need to agree to our terms of service");
+        return false;
+    }
+    
+    return true;
+}
+
+$.each(fields, function(k,v) {
+    $("#"+k).blur(function() {
+        let classP = $("#"+k).val() == "" ? "error" : "success";
+        let classN = $("#"+k).val() == "" ? "success" : "error";
+        console.log($("#"+k).val() == "");
+        $("#"+k).parent().removeClass("has-"+classN);
+        $("#"+k).parent().addClass("has-"+classP);
+    });
+});
+
+
 </script>
 
 </html>
+

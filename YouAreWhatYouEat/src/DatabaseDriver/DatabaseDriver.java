@@ -1,5 +1,6 @@
 package DatabaseDriver;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -171,8 +172,15 @@ public class DatabaseDriver {
 				else if(rs.getString("NutrDesc").toLowerCase().contains("protein")) {
 					protein = rs.getString("Nutr_Val") + " " + rs.getString("Units");
 				}
-				else if(rs.getString("NutrDesc").toLowerCase().contains("vitamin c")) {
-					vitamin = rs.getString("Nutr_Val") + " " + rs.getString("Units");
+				else if(rs.getString("NutrDesc").toLowerCase().contains("vitamin")) {
+					byte ptext[] = rs.getString("Units").getBytes();
+					String unit = "";
+					try {
+						unit = new String(ptext, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						System.out.println("unsupported encoding in getFoodInfo: " + e.getMessage());
+					}
+					vitamin = rs.getString("Nutr_Val") + " " + unit;
 				}
 				else if(rs.getString("NutrDesc").toLowerCase().contains("sugar")) {
 					sugar = rs.getString("Nutr_Val") + " " + rs.getString("Units");
@@ -184,6 +192,7 @@ public class DatabaseDriver {
 			result.put("vitamin", vitamin);
 			result.put("sugar", sugar);
 			result.put("foodName", foodName);
+			
 		} catch (SQLException sqle) {
 			System.out.println("sqle: " + sqle.getMessage());
 		}
@@ -337,8 +346,9 @@ public class DatabaseDriver {
 		return true;
 	}
 	
-	public boolean tangleSharing(int userID, String mealID) {
+	public String tangleSharing(int userID, String mealID) {
 		int dietID = Integer.parseInt(mealID);
+		String result = "";
 		try {
 			String query = "SELECT access FROM DietUser WHERE dietID = ? AND userID = ?";
 			ps = conn.prepareStatement(query);
@@ -351,7 +361,7 @@ public class DatabaseDriver {
 			}
 			// if the specified user with the meal is not found, return an error
 			if(currAccess == -1) {
-				return false;
+				result = "-1";
 			}
 			// else, process the update
 			query = "UPDATE DietUser SET access = ? WHERE dietID = ? AND userID = ?";
@@ -360,15 +370,17 @@ public class DatabaseDriver {
 			ps.setInt(3, userID);
 			if(currAccess == 0) {
 				ps.setInt(1, 1);
+				result = "1";
 			}
 			else {
 				ps.setInt(1, 0);
+				result = "0";
 			}
 			ps.executeUpdate();
 		} catch (SQLException sqle) {
 			System.out.println("sqle: " + sqle.getMessage());
 		}
-		return true;
+		return result;
 	}
 	
 	// End of diet database update code
@@ -508,9 +520,29 @@ public class DatabaseDriver {
 		return userName;
 	}
 	
+	// check if current user is following target
+	boolean Following(int currUser, int target) {
+		String query = "SELECT * FROM FollowRelation WHERE from_ = ? AND target = ? ";
+		boolean result = false;
+		try {
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			ps.setInt(2, target);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			System.out.println("sqle in Following: " + e.getMessage());
+		}
+		return result;
+	}
+	
+	
+	
 	public ArrayList<Map<String, String> > SuggestUser(int num, int currUser){
-//		System.out.println("user currUser: " + currUser);
-//		System.out.println("user num: " + num);
+		System.out.println("user currUser: " + currUser);
+		System.out.println("user num: " + num);
 		
 		
 		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
@@ -539,6 +571,12 @@ public class DatabaseDriver {
 				String currFoodID = "";
 				Map<String, String> addUser = new HashMap();
 				while(rs.next()) {
+					int target = rs.getInt("userID");
+					
+					
+					if(this.Following(currUser, target)) {
+						continue;
+					}
 					addUser.put("userId", Integer.toString(rs.getInt("userID")));
 					addUser.put("picture", rs.getString("profilePic"));
 					addUser.put("name", rs.getString("userName"));
@@ -645,9 +683,9 @@ public class DatabaseDriver {
 						newMealToSuggest.put("mealName", currDietName);
 						newMealToSuggest.put("mealId", Integer.toString(currDietID));
 						newMealToSuggest.put("createdBy", currCreator);
-//						System.out.println("mealName: " + currDietName);
-//						System.out.println("mealid: " + currDietID);
-//						System.out.println("created by: " +  currCreator);
+						System.out.println("mealName: " + currDietName);
+						System.out.println("mealid: " + currDietID);
+						System.out.println("created by: " +  currCreator);
 						String foodItem = "";
 						for(int i=0; i<foodItemList.size(); i++) {
 							foodItem += foodItemList.get(i);

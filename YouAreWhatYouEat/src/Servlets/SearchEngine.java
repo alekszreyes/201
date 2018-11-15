@@ -52,6 +52,10 @@ class TypeResponse{
 	String type;
 }
 
+class TanglePrivateResponse{
+	String newStatus;
+}
+
 /**
  * Servlet implementation class SearchEngine
  */
@@ -92,6 +96,7 @@ public class SearchEngine extends HttpServlet {
     			SearchFoodItem newFood = new SearchFoodItem();
     			newFood.foodId = searchResult.get(i).getKey();
     			newFood.foodName = searchResult.get(i).getValue();
+    			
     			food.add(newFood);
     		}
     		try {
@@ -119,6 +124,7 @@ public class SearchEngine extends HttpServlet {
     		ir.foodName = result.get("foodName");
     		ir.protein = result.get("protein");
     		ir.sugar = result.get("sugar");
+    		ir.vitamin = result.get("vitamin");
     		try {
 				String toPass = gson.toJson(ir);
 				out.println(toPass);
@@ -267,12 +273,16 @@ public class SearchEngine extends HttpServlet {
     		System.out.println(userID + " " + dietID);
 //    		dietID = "3";
 //    		userID = 2;
-    		TypeResponse sr = new TypeResponse();
-    		if(databaseDriver.tangleSharing(userID, dietID)) {
-    			sr.type = "success";
+    		TanglePrivateResponse sr = new TanglePrivateResponse();
+    		String result = databaseDriver.tangleSharing(userID, dietID);
+    		if(result.equals("1")) {
+    			sr.newStatus = "Public";
+    		}
+    		else if(result.equals("-1")) {
+    			sr.newStatus = "fail: the specified meal does not exist for the user!";
     		}
     		else {
-    			sr.type = "fail: the specified meal does not exist for the user!";
+    			sr.newStatus = "Private";
     		}
     		try {
 				String toPass = gson.toJson(sr);

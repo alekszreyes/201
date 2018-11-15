@@ -86,9 +86,9 @@ public class UserManager extends HttpServlet {
     // dealing with picture related stuff only
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	System.out.println("in doGet");
-    	
+    	HttpSession session = request.getSession();
     	SaveImage si = new SaveImage();
-    	String email = request.getParameter("phone");
+    	String email = (String) session.getAttribute("userEmail");
     	String file = request.getParameter("file");
     	
     	//String fileName = Integer.toString(databaseDriver.getCurrUserID(email)) + ".png";

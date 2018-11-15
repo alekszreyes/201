@@ -127,7 +127,11 @@ public class SummaryEngine extends HttpServlet {
 			int DayOfWeekToday = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 			
 			for (int i = 0; i < 7; i++) {
-				axis.add(dayOfWeekConv.get(DayOfWeekToday + i));
+				int dayOfWeek = DayOfWeekToday + i;;
+				if (dayOfWeek > 7) {
+					dayOfWeek -= 7;
+				}
+				axis.add(dayOfWeekConv.get(dayOfWeek));
 				week1.add(result.get(14 - i));
 				week2.add(result.get(7 - i));
 			}

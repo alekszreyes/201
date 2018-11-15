@@ -446,7 +446,7 @@ public class DatabaseDriver {
 				ps = conn.prepareStatement(query);
 				ps.setString(1, firstName + " " + lastName);
 				ps.setString(2, password);
-				ps.setString(3, email + ".png");
+				ps.setString(3, "");
 				ps.setString(4, email);
 				ps.executeUpdate();
 				msg = "success";
@@ -579,6 +579,7 @@ public class DatabaseDriver {
 		}
 		return result;
 	}
+	
 	
 	
 	// method to return suggested meal
@@ -740,6 +741,25 @@ public class DatabaseDriver {
 			System.out.println("sqle in tangleFollowRelation: " + e.getMessage());
 		}
 		return result;
+	}
+	
+	public boolean tryMeal(int currUser, int dietID) {
+		System.out.println("in try Meal");
+		String query = "INSERT INTO DietUser(userID, dietID, creationTime, access) VALUES (?, ?, ?, ?)";
+		try {
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			ps.setInt(2, dietID);
+			java.sql.Date sqlDate = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
+			ps.setString(3, sqlDate.toString());
+			ps.setInt(4, 0);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("sqle in tryMeal: " + e.getMessage());
+			return false;
+		}
+		return true;
+		
 	}
 	
 	// End of User database query code

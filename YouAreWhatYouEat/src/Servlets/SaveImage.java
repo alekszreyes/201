@@ -21,6 +21,8 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
 public class SaveImage {
 	
 	public String saveImage(HttpServletRequest request, HttpServletResponse response, String outFile) throws IOException {
+		System.out.println("in save image");
+		
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
@@ -38,6 +40,7 @@ public class SaveImage {
 				return "";
 			}
 			while (it.hasNext()) {
+				System.out.println("next");
 				out.println("<tr>");
 				String path = request.getServletContext().getRealPath("/");
 				System.out.println(path);

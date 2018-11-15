@@ -48,11 +48,7 @@ class SaveResponse{
 	String mealId;
 }
 
-class DeleteResponse{
-	String type;
-}
-
-class ShareResponse{
+class TypeResponse{
 	String type;
 }
 
@@ -243,7 +239,7 @@ public class SearchEngine extends HttpServlet {
     		int userID = (int)session.getAttribute("userID");
 //    		mealID = "1";
 //    		userID = 2;
-    		DeleteResponse dr = new DeleteResponse();
+    		TypeResponse dr = new TypeResponse();
     		if (databaseDriver.deleteMeal(userID, mealID)) {
     			dr.type = "success";
     		}
@@ -271,7 +267,7 @@ public class SearchEngine extends HttpServlet {
     		System.out.println(userID + " " + dietID);
 //    		dietID = "3";
 //    		userID = 2;
-    		ShareResponse sr = new ShareResponse();
+    		TypeResponse sr = new TypeResponse();
     		if(databaseDriver.tangleSharing(userID, dietID)) {
     			sr.type = "success";
     		}
@@ -305,7 +301,6 @@ public class SearchEngine extends HttpServlet {
     		}
     		databaseDriver.close();
     	}
-    	
     }
 }
 

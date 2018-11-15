@@ -291,9 +291,9 @@ public class SearchEngine extends HttpServlet {
         	DatabaseDriver databaseDriver = new DatabaseDriver();
         	databaseDriver.connect();
     		
-    		//int currUser = (int) session.getAttribute("userID");
+    		int currUser = (int) session.getAttribute("userID");
     		
-    		int currUser = 3;
+    		//int currUser = 3;
     		ArrayList<Map<String, String>> result = databaseDriver.getMeals(currUser);
     		
     		try {
@@ -305,6 +305,7 @@ public class SearchEngine extends HttpServlet {
     		}
     		databaseDriver.close();
     	}
+    	
     }
 }
 

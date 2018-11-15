@@ -1,5 +1,10 @@
 var s = "";
 $(function() {
+
+    $("#suggestion_msg").hide();
+    $("#meals_msg").hide();
+    $("#followers_msg").hide();
+
     // get suggestions
     $.ajax("UserManager", {
         type: 'POST',
@@ -13,11 +18,13 @@ $(function() {
         try {
             var json = JSON.parse(d);
             s = json;
+            if(json.length == 0) { $("#suggestion_msg").show(); }
+            else { $("#suggesion_msg").hide(); }
             $.each(json, function(i, user){
           
                 let str = '<tr id="r' + user.userId 
                     +'"><td><img src="' + user.picture
-                    + '" height="120" /></td>'
+                    + '" class="prof_sugg" height="120" /></td>'
                     + '<td><b>' + user.name + '</b></td>'
                     + '<td>' + user.meals + '</td>'
                     + '<td><b>Likes</b><br>' + user.likes + '</td>'
@@ -60,6 +67,8 @@ $(function() {
         try {
             var json = JSON.parse(d);
             s = json;
+            if(json.length == 0) { $("#meals_msg").show(); }
+            else { $("#meals_msg").hide(); }
             $.each(json, function(i, meal){
           
                 let str = '<tr id="try' + meal.mealId 
@@ -108,6 +117,8 @@ $(function() {
     })
     .done(function(d) {
         var json = JSON.parse(d);
+        if(json.length == 0) { $("#followers_msg").show(); }
+        else { $("#followers_msg").hide(); }
         let str = '';
 
         $.each(json, function(i, user) {
@@ -176,3 +187,4 @@ $(function() {
         });
     });
 });
+

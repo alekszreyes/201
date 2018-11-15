@@ -10,8 +10,6 @@
 
     <script src="jquery-1.11.1.min.js"></script>
 
-   
-
     <!-- from alex -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -36,7 +34,6 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
   </head>
 
 <body role="document">
@@ -57,90 +54,41 @@
               </ul>
       <ul class="nav navbar-nav navbar-right">
       <li id="loginNav"><a href="login.html"><span class="glyphicon glyphicon-log-in"></span>
-                Log in</a></li>
+Log in</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
     <div id="top">
-        <img class="center-block" height="120" 
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVehmHJrXNRaFSiD2mmexUgE0sXK52smE-EtPrPikUhP-2EZoQ" />
+        <img class="center-block" height="120" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVehmHJrXNRaFSiD2mmexUgE0sXK52smE-EtPrPikUhP-2EZoQ" />
     </div>
 
 
     <div id="middle1">
         <div class="container">
-
-<div class="container">
-    <div class="row">
-        <div class="col-centered">
-            <p class="spaceTop">
-                If you already have an account
-                <a href="login.html">click here</a>
-            </p>
-        </div>
+<div class="row">
+    <div class="col-centered">
+        <h1>Login</h1>
+        <p>If you want to create an account,
+        <a href="register.html">click here</a></p>
     </div>
-
-    <form role="form" method="post" action="UserManager" enctype="multipart/form-data" id="form">
-
-        <div class="form-group">
-            <label for="firstName">First Name</label>
-
-            <input type="text" class="form-control" id="firstName" 
-                name="firstName" placeholder="James" autofocus>
-        </div>
-
-        <div class="form-group">
-            <label for="lastName">Last Name</label>
-
-            <input type="text" class="form-control" id="lastName" 
-                name="lastName" placeholder="Bond">
-        </div>
-
-
-        <div class="form-group">
-            <label for="email">Email</label>
-
-            <input type="text" class="form-control" id="email" 
-                name="phone" placeholder="email" >
-        </div>
-
-        <div class="form-group">
-            <label for="password">Password</label>
-
-            <input type="password" class="form-control" id="password" 
-                name="password" placeholder="Password" autocomplete="off">
-        </div>
-
-        <div class="form-group">
-            <label for="confirm">Confirm Password</label>
-
-            <input type="password" class="form-control" id="confirm" 
-                name="confirm" placeholder="Verify password" autocomplete="off">
-        </div>
-        <div class="form-group">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="tosCheck"
-                    value="1" name="tosCheck">
-                <label class="form-check-label" for="tosCheck">
-                    I agree to the 
-                    <a href="tos.html" target="_blank">
-                        Terms of Service</a>
-              </label>
-            </div>
-        </div>
-        <div class="form-group">
-                <label for="file">Profile Picture</label>
-                <input type="file" class="form-control" id="file" name="file">
-            </div>
-            
-            <input type="hidden" name="type" value="register" >
-
-        <button type="submit" class="btn btn-danger" id="registerBtn"
-            value="register">Register</button>
-    </form>
 </div>
+
+<form role="form" method="post">
+    <div class="form-group">
+        <label for="email">email</label>
+        <input type="text" class="form-control" id="email"
+        placeholder="Enter email" name="email" autofocus>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+    </div>
+    <button type="submit" class="btn btn-danger" value="Login">Login</button>
+    <a href="index.html" class="btn btn-default">Enter as a Guest</a>
+</form>
+
 </div>
 </div>
 
@@ -149,145 +97,63 @@
     </div>
 
 </body>
-
-<script src="notify.js"></script>
 <script src="ws.js"></script>
 <script>
+    $(".nav li").removeClass("active");
+    $("#loginNav").addClass("active");
+    $("form").submit(function(e){ e.preventDefault();return m();});
 
-$("#registerBtn").click( (e)=>{
+    var s = "";
 
-    e.preventDefault();
-
-    if(!valid()) { return false; }
-
-    function ajax(file, fileName) {
-
-        // send and form
+    function m(){
         $.ajax("UserManager", {
             type: 'post',
             data: {
-                type: "register",
-                firstName: $("#firstName").val(),
-                lastName: $("#lastName").val(),
+                type: "login",
                 email: $("#email").val(),
-                pictureName: fileName,
-                password: $("#password").val(),
-                picture: file
+                password: $("#password").val()
             },
             async: false
         })
         .fail(function(d) {
-
-                console.log(d.status + ": " + d.statusText);
+            console.log(d.status + ": " + d.statusText);
         })
-        .done( function(d){
-                console.log("attempting to parse " + d);
+        .done(function(d){
+            console.log("attempting to parse " + d);
             var json;
             try {
                 json = JSON.parse(d);
                 console.log("parse successful. Checking fields");
                 console.log("type: " + json.type);
                 console.log("message: " + json.message);
-
-                if(json.type == "success") {
-
-                    try {
-                        connectToWebsocket();
-                        socketSend("logged");
-                    }
-                    catch(e) {
-                        console.log("error communicating with websocket");
-                    }
-                    finally {
-                        // window.location.href="loggedIn.html";
-                        $("#form").submit();
-                    }
-                }
-                else {
-                    console.log(json.message);
-                }
+                s=json;
             }
             catch(e) {
                 console.log("Unable to parse answer from server.\n"
                     +";p");
             }
+
+            if(s.type == "success") {
+
+                try {
+                    loginConnect();
+                    //socketSend("logged");
+                }catch(e) {
+                    console.log("error connecting to websocket");
+                }
+                finally{
+                    window.location.href="loggedIn.html";
+                }
+            }
+            else {
+                console.log(json.message);
+            }
         });
-    }
-
-    if( document.getElementById("file").files[0] == undefined ) {
-        ajax( "undefined", "undefined" );
         return false;
     }
-
-    // prepare file (from https://stackoverflow.com/questions/4006520/using-html5-file-uploads-with-ajax-and-jquery)
-    var reader = new FileReader();
-    reader.readAsText( document.getElementById("file").files[0] );
-
-    // when reading
-    reader.onload = function(event) {
-        ajax( event.target.result,
-            document.getElementById('file').files[0].name
-        );
-
-    return false;
-
-}
-
-});
-
-// fields to check
-let fields = {
-    "firstName" : "first name",
-    "lastName" : "last name",
-    "email" : "email",
-    "password" : "password",
-    "confirm" : "confirmation"
-};
-
-function valid(){
-
-
-    let ind = true;
-
-    // iterate and check
-    $.each(fields, function(k,v) {
-        if($("#"+k).val() == "") {
-            notify("Please enter your " + v);
-            ind = false;
-            $("#"+k).focus();
-            return false;
-        }
-    });
-
-    if(!ind) { return false; }
-
-    if( $("#password").val() != $("#confirm").val() ) {
-        notify("passwords don't match");
-        $("#confirm").focus();
-        return false;
-    }
-
-    // checkbox
-    if($("#tosCheck:checked").length == 0) {
-        notify("You need to agree to our terms of service");
-        return false;
-    }
-    
-    return true;
-}
-
-$.each(fields, function(k,v) {
-    $("#"+k).blur(function() {
-        let classP = $("#"+k).val() == "" ? "error" : "success";
-        let classN = $("#"+k).val() == "" ? "success" : "error";
-        console.log($("#"+k).val() == "");
-        $("#"+k).parent().removeClass("has-"+classN);
-        $("#"+k).parent().addClass("has-"+classP);
-    });
-});
-
 
 </script>
 
 </html>
+
 

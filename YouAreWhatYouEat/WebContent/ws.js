@@ -9,7 +9,7 @@
  *  - notify.js to display message
  *  **/
 var socket;
-	
+connectToWebsocket();
 /** call to load **/
 function connectToWebsocket() {
     socket = new WebSocket("ws://localhost:8080/YouAreWhatYouEat/ss");
@@ -18,6 +18,7 @@ function connectToWebsocket() {
 	console.log("Connected to websocket");
     }
     socket.onmessage = function(event){
+    	console.log("Got Message!");
 	notify(event.data);
     }
     socket.onclose = function(event){

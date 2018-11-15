@@ -591,6 +591,7 @@ public class DatabaseDriver {
 		String query = "SELECT * FROM Users, DietFood, DietUser \n" + 
 				"WHERE DietUser.userID = Users.userID \n" + 
 				"AND DietFood.dietID = DietUser.dietID\n" +
+				"AND DietUser.access = 1\n" +
 				"AND Users.userID != ?\n";
 		try {
 			ps = conn.prepareStatement(query);
@@ -614,6 +615,9 @@ public class DatabaseDriver {
 						newMealToSuggest.put("mealName", currDietName);
 						newMealToSuggest.put("mealId", Integer.toString(currDietID));
 						newMealToSuggest.put("createdBy", currCreator);
+//						System.out.println("mealName: " + currDietName);
+//						System.out.println("mealid: " + currDietID);
+//						System.out.println("created by: " +  currCreator);
 						String foodItem = "";
 						for(int i=0; i<foodItemList.size(); i++) {
 							foodItem += foodItemList.get(i);
@@ -639,6 +643,20 @@ public class DatabaseDriver {
 				}
 				else {
 					foodItemList.add(this.getFoodName(rs.getString("foodID")));
+				}
+				if(rs.isLast() && suggested != num) {
+					newMealToSuggest.put("mealName", currDietName);
+					newMealToSuggest.put("mealId", Integer.toString(currDietID));
+					newMealToSuggest.put("createdBy", currCreator);
+					String foodItem = "";
+					for(int i=0; i<foodItemList.size(); i++) {
+						foodItem += foodItemList.get(i);
+						if(i != foodItemList.size()-1) {
+							foodItem += "; ";
+						}
+					}
+					newMealToSuggest.put("foodItems", foodItem);
+					result.add(newMealToSuggest);
 				}
 				System.out.println("currDiet after loop: " + currDiet);
 				System.out.println("id in ds after loop: " + dietIdInDS);

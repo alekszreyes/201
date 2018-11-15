@@ -69,6 +69,7 @@ public class UserServer {
 		for (Map.Entry<Session, Integer> su: sessions.entrySet()) {
 			if (((RegisteredUser) users.getUser(su.getValue())).isFollowing(id)) {
 				try {
+					System.out.println("Sending message to User " + su.getValue());
 					su.getKey().getBasicRemote().sendText(message);
 				} catch (IOException ioe) {
 					System.out.println("ioe: " + ioe.getMessage());

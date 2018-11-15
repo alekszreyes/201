@@ -82,7 +82,6 @@
         </div>
     </div>
 
-    <form role="form" method="get" action="UserManager" enctype="multipart/form-data" id="form">
 
         <div class="form-group">
             <label for="firstName">First Name</label>
@@ -130,12 +129,12 @@
               </label>
             </div>
         </div>
+    <form role="form" method="get" action="UserManager" enctype="multipart/form-data" id="form">
         <div class="form-group">
                 <label for="file">Profile Picture</label>
                 <input type="file" class="form-control" id="file" name="file">
             </div>
             
-            <input type="hidden" name="type" value="register" >
 
         <button type="submit" class="btn btn-danger" id="registerBtn"
             value="register">Register</button>

@@ -462,6 +462,18 @@ public class DatabaseDriver {
 		 
 	}
 	
+	public void saveImage(String picture, String email) {
+		String query = "UPDATE Users SET profilePic = ? WHERE userEmail = ?";
+		try {
+			ps = conn.prepareStatement(query);
+			ps.setString(1, picture);
+			ps.setString(2, email);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("sqle in saveImage: " + e.getMessage());
+		}
+	}
+	
 	public int getCurrUserID(String userEmail) {
 		int userID = -1;
 		String query = "SELECT userID FROM Users WHERE userEmail = ?";
@@ -579,6 +591,23 @@ public class DatabaseDriver {
 		}
 		return result;
 	}
+	
+	
+	// method to get all mealID of a user
+	public ArrayList<Integer> getMealID(int currUser){
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		String query = "SELECT dietID FROM DietUser WHERE userID = ? ";
+		try {
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, currUser);
+			
+		} catch (SQLException e) {
+			System.out.println("sqle in getMealID: " + e.getMessage());
+		}
+
+		return result;
+	}
+	
 	
 	
 	

@@ -22,7 +22,7 @@ public class SaveImage {
 	
 	public String saveImage(HttpServletRequest request, HttpServletResponse response, String outFile) throws IOException {
 		System.out.println("in save image");
-		
+		outFile = "test";
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);

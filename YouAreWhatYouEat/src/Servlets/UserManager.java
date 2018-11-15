@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -82,14 +83,33 @@ public class UserManager extends HttpServlet {
     	return r;
     }
     
+    // dealing with picture related stuff only
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String fileName = request.getParameter("pictureName");
+    	System.out.println("in doGet");
+    	
     	SaveImage si = new SaveImage();
-		
+    	String email = request.getParameter("phone");
+    	String file = request.getParameter("file");
+    	
+    	//String fileName = Integer.toString(databaseDriver.getCurrUserID(email)) + ".png";
+    	System.out.println("doGet email: " + email);
+    	System.out.println("pictureName: " + file);
+    	
 		// the following method save the image and return the relevant path to the image
-		String picture = si.saveImage(request, response, fileName);
+		String picture = si.saveImage(request, response, file);
+		System.out.println("path: " + picture);
+		
+		databaseDriver.saveImage(picture, email);
+		
+		// redirect the next page
+		String nextPage = "/loggedIn.html";
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextPage);
+		dispatcher.forward(request, response);
+		
+		// announce the webSocket
+		
     }
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String type = request.getParameter("type");
     	System.out.println("current type: " + type);
     	PrintWriter out = response.getWriter();

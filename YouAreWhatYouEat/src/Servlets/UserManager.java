@@ -1,5 +1,7 @@
 package Servlets;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -96,10 +98,11 @@ public class UserManager extends HttpServlet {
     		String email = request.getParameter("email");
     		String picture = request.getParameter("picture");
     		String password = request.getParameter("password");
+    		String picName = request.getParameter("pictureName");
     		System.out.println("firstname: " + firstName);
     		System.out.println("lastname: " + lastName);
     		System.out.println("email: " + email);
-    		System.out.println("picture: " + picture);
+    		//System.out.println("picture: " + picture);
     		System.out.println("password: " + password);
     		
     		if(firstName == null || lastName == null || email == null || picture == null || password == null
@@ -173,13 +176,13 @@ public class UserManager extends HttpServlet {
     	//type = "suggestedMeals";
     	if(type != null && type.equals("Suggestions")) {
     		System.out.println("in suggestions");
-    		//int numSuggest = Integer.parseInt(request.getParameter("number"));
-    		//int currUser = (int)session.getAttribute("userID");
+    		int numSuggest = Integer.parseInt(request.getParameter("number"));
+    		int currUser = (int)session.getAttribute("userID");
     		
-    		// ***for testing
-    		int currUser = 1;
-    		int numSuggest = 2;
-    		// ***
+//    		// ***for testing
+//    		int currUser = 1;
+//    		int numSuggest = 2;
+//    		// ***
     		
     		ArrayList<Map<String, String> > SuggestUser = databaseDriver.SuggestUser(numSuggest, currUser);
     		try {
@@ -193,16 +196,16 @@ public class UserManager extends HttpServlet {
     	if(type != null && type.equals("suggestedMeals")) {
     		System.out.println("in suggested meals");
     		
-    		// ***for DEBUG only
-    		int numToSuggest = 2;
-    		int currUser = 1;
-    		// ***
+//    		// ***for DEBUG only
+//    		int numToSuggest = 2;
+//    		int currUser = 1;
+//    		// ***
     		
     		//System.out.println("num from front end: " + request.getParameter("number"));
     		//System.out.println("num: " + numToSuggest);
     		
-    		//int currUser = (int)session.getAttribute("userID");
-    		//int numToSuggest = Integer.parseInt(request.getParameter("number"));
+    		int currUser = (int)session.getAttribute("userID");
+    		int numToSuggest = Integer.parseInt(request.getParameter("number"));
 
     		ArrayList<Map<String, String>> result = databaseDriver.SuggestMeal(currUser, numToSuggest);
 
@@ -218,8 +221,8 @@ public class UserManager extends HttpServlet {
     	// return all followers of the current user
     	if(type != null && type.equals("followers")) {
     		System.out.println("in followers");
-    		//int currUser = (int) session.getAttribute("userID");
-    		int currUser = 1;
+    		int currUser = (int) session.getAttribute("userID");
+    		//int currUser = 1;
     		ArrayList<Map<String, String> > result = databaseDriver.getFollowers(currUser);
     		try {
     			String toPass = gson.toJson(result);

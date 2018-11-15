@@ -36,7 +36,7 @@ public class DatabaseDriver {
 	public void connect(){
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nutrition?user=root&password=peter_sheng&useSSL=false");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nutrition?user=root&password=lunjohnzhang&useSSL=false");
 			System.out.println("Database connected!");
 		} catch (ClassNotFoundException e) {
 			System.out.println("cnf: " + e.getMessage());
@@ -87,7 +87,6 @@ public class DatabaseDriver {
 			System.out.println("sqle: " + sqle.getMessage());
 		}
 		return rs;
-		
 	}
 	
 	public ResultSet QueryNutritionID(String toQuery){
